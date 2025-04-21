@@ -361,7 +361,7 @@
         
         .stat-text {
             font-size: 1.1rem;
-            color: rgba(255, 255, 255, 0.8);
+            color: #94a3b8;
         }
         
         /* Contact Section */
@@ -541,6 +541,106 @@
         .float {
             animation: float 4s ease-in-out infinite;
         }
+        
+        /* News Section */
+        .news {
+            padding: 5rem 0;
+            background-color: #0f172a;
+        }
+        
+        .news-container {
+            margin-top: 3rem;
+        }
+        
+        .news-card {
+            background: rgba(30, 41, 59, 0.7);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            height: 100%;
+            border: 1px solid rgba(58, 123, 213, 0.1);
+        }
+        
+        .news-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 210, 255, 0.2);
+            border-color: rgba(58, 123, 213, 0.3);
+        }
+        
+        .news-image {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .news-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .news-card:hover .news-image img {
+            transform: scale(1.05);
+        }
+        
+        .news-content {
+            padding: 1.5rem;
+        }
+        
+        .news-date {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        
+        .news-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--light-color);
+            line-height: 1.4;
+        }
+        
+        .news-excerpt {
+            color: #cbd5e1;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        
+        .news-link {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        
+        .news-link i {
+            margin-left: 5px;
+            transition: transform 0.3s ease;
+        }
+        
+        .news-link:hover {
+            color: var(--secondary-color);
+        }
+        
+        .news-link:hover i {
+            transform: translateX(3px);
+        }
+        
+        .news-placeholder {
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #94a3b8;
+        }
     </style>
 </head>
 <body>
@@ -551,6 +651,7 @@
         </div>
         <nav>
             <a href="#features">Features</a>
+            <a href="#news">News</a>
             <a href="#about">About</a>
             <a href="#stats">Stats</a>
             <a href="#contact">Contact</a>
@@ -624,6 +725,27 @@
             <div class="stat-item" data-aos="fade-up" data-aos-delay="400">
                 <div class="stat-number">24/7</div>
                 <div class="stat-text">Support</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Crypto News Section -->
+    <section id="news" class="news">
+        <div class="container">
+            <div class="section-title" data-aos="fade-up">
+                <h2>Latest Crypto News</h2>
+                <p>Stay informed with the latest developments in the cryptocurrency world.</p>
+            </div>
+
+            <div class="news-container" data-aos="fade-up" data-aos-delay="100">
+                <div class="row" id="news-articles">
+                    <!-- News articles will be loaded here -->
+                    <div class="col-12 text-center">
+                        <div class="spinner-border text-light" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -702,6 +824,7 @@
             <div class="footer-links">
                 <a href="#home">Home</a>
                 <a href="#features">Features</a>
+                <a href="#news">News</a>
                 <a href="#about">About</a>
                 <a href="#contact">Contact</a>
                 <a href="login.html">Login</a>
@@ -741,9 +864,138 @@
             }
         });
 
-        // Add background-clip standard property for compatibility
+        // Fetch and display news articles
+        async function fetchNews() {
+            try {
+                // Show loading state
+                document.getElementById('news-articles').innerHTML = `
+                    <div class="col-12 text-center">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2 text-light">Loading latest cryptocurrency news...</p>
+                    </div>
+                `;
+
+                // Use a CORS proxy and add timestamp to prevent caching
+                const timestamp = Date.now();
+                const apiUrl = `https://data-api.coindesk.com/news/v1/article/list?api_key=05588e43e8b68c5a55566a594bf9f44dfcbe64fcf1f80081faaecfcb14c38e2a&t=${timestamp}`;
+                const proxyUrl = 'https://api.allorigins.win/get?url=';
+                const encodedUrl = encodeURIComponent(apiUrl);
+                
+                console.log('Fetching news...');
+                const response = await fetch(`${proxyUrl}${encodedUrl}`);
+                
+                if (!response.ok) {
+                    throw new Error(`API error: ${response.status}`);
+                }
+
+                const proxyData = await response.json();
+                
+                if (!proxyData || !proxyData.contents) {
+                    throw new Error('Invalid proxy response');
+                }
+                
+                const data = JSON.parse(proxyData.contents);
+                console.log('News API response received');
+
+                // Check if we have valid data
+                if (!data || !data.Data || !Array.isArray(data.Data)) {
+                    throw new Error('Invalid API response format');
+                }
+
+                // Filter and sort articles
+                let articles = data.Data
+                    .filter(article => 
+                        article.IMAGE_URL && 
+                        article.IMAGE_URL.trim() !== '' &&
+                        article.TITLE &&
+                        article.PUBLISHED_ON
+                    )
+                    .sort((a, b) => b.PUBLISHED_ON - a.PUBLISHED_ON); // Sort by newest first
+
+                if (articles.length === 0) {
+                    document.getElementById('news-articles').innerHTML = `
+                        <div class="col-12">
+                            <div class="news-placeholder">
+                                <p>No news articles available at this time.</p>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Take only the first 6 articles
+                articles = articles.slice(0, 6);
+                displayNews(articles);
+
+            } catch (error) {
+                console.error('Error fetching news:', error);
+                document.getElementById('news-articles').innerHTML = `
+                    <div class="col-12">
+                        <div class="news-placeholder">
+                            <p>Unable to retrieve news at this time. Please try again later.</p>
+                            <button id="retry-news" class="btn btn-outline-primary mt-3">
+                                <i class="fas fa-sync-alt"></i> Retry
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                // Add click handler to retry button
+                document.getElementById('retry-news')?.addEventListener('click', () => {
+                    fetchNews();
+                });
+            }
+        }
+
+        function displayNews(articles) {
+            const newsContainer = document.getElementById('news-articles');
+            let newsHTML = '';
+
+            articles.forEach(article => {
+                // Format date
+                const publishDate = new Date(article.PUBLISHED_ON * 1000);
+                const formattedDate = publishDate.toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+
+                // Get source info
+                const sourceName = article.SOURCE_DATA?.NAME || '';
+                const sourceIcon = article.SOURCE_DATA?.IMAGE_URL || '';
+
+                newsHTML += `
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="news-card h-100">
+                            <div class="news-image">
+                                <img src="${article.IMAGE_URL}" alt="${article.TITLE}" loading="lazy">
+                            </div>
+                            <div class="news-content d-flex flex-column">
+                                <div class="source-info d-flex align-items-center mb-2">
+                                    ${sourceIcon ? `<img src="${sourceIcon}" class="source-icon me-2" alt="${sourceName}" width="16" height="16" onerror="this.style.display='none';">` : ''}
+                                    <small class="text-muted">${sourceName} • ${formattedDate}</small>
+                                </div>
+                                <h3 class="news-title mb-2">${article.TITLE}</h3>
+                                <p class="news-excerpt mb-3 flex-grow-1">
+                                    ${article.BODY ? article.BODY.substring(0, 100) + '...' : 'No description available'}
+                                </p>
+                                <a href="${article.URL}" class="news-link mt-auto" target="_blank">
+                                    Read Full Article <i class="fas fa-arrow-right ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            newsContainer.innerHTML = newsHTML;
+        }
+
+        // Add refresh button to news section
         document.addEventListener('DOMContentLoaded', function() {
-            // Create a style element instead of trying to modify existing stylesheets
+            // Add background-clip standard property for compatibility
             const style = document.createElement('style');
             style.textContent = `
                 .hero h1,
@@ -753,8 +1005,141 @@
                 .footer-logo {
                     background-clip: text;
                 }
+                
+                /* Additional styles for news cards */
+                .news-card {
+                    transition: all 0.3s ease;
+                    height: 100%;
+                    display: flex;
+                    flex-direction: column;
+                    border-radius: 12px;
+                    overflow: hidden;
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                }
+                
+                .news-image {
+                    position: relative;
+                    height: 180px;
+                    overflow: hidden;
+                    background-color: #1e293b;
+                }
+                
+                .news-image img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    transition: transform 0.5s ease;
+                }
+                
+                .news-card:hover .news-image img {
+                    transform: scale(1.05);
+                }
+                
+                .news-content {
+                    padding: 1rem;
+                    background-color: #1e293b;
+                }
+                
+                .source-icon {
+                    border-radius: 50%;
+                    object-fit: cover;
+                }
+                
+                .news-categories {
+                    z-index: 1;
+                }
+                
+                .news-title {
+                    font-size: 1.1rem;
+                    line-height: 1.4;
+                    font-weight: 600;
+                    color: #f8fafc;
+                }
+                
+                .news-excerpt {
+                    font-size: 0.9rem;
+                    color: #94a3b8;
+                    line-height: 1.5;
+                }
+                
+                .news-link {
+                    color: var(--primary-color);
+                    text-decoration: none;
+                    font-size: 0.9rem;
+                    font-weight: 500;
+                    transition: color 0.3s ease;
+                }
+                
+                .news-link:hover {
+                    color: var(--secondary-color);
+                }
+                
+                #refresh-news {
+                    position: absolute;
+                    top: 20px;
+                    right: 20px;
+                    background: rgba(58, 123, 213, 0.2);
+                    border: 1px solid rgba(58, 123, 213, 0.3);
+                    color: var(--light-color);
+                    padding: 0.5rem 1rem;
+                    border-radius: 50px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                }
+                
+                #refresh-news:hover {
+                    background: rgba(58, 123, 213, 0.4);
+                }
+                
+                .spinner-border {
+                    width: 3rem;
+                    height: 3rem;
+                }
+                
+                .news-placeholder {
+                    text-align: center;
+                    padding: 2rem;
+                    background: rgba(30, 41, 59, 0.5);
+                    border-radius: 12px;
+                    margin: 2rem auto;
+                    max-width: 500px;
+                }
+                
+                .badge {
+                    font-size: 0.7rem;
+                    padding: 0.25rem 0.5rem;
+                    font-weight: 500;
+                }
             `;
             document.head.appendChild(style);
+            
+            // Add refresh button to news section
+            const newsSection = document.querySelector('#news .section-title');
+            const refreshButton = document.createElement('button');
+            refreshButton.id = 'refresh-news';
+            refreshButton.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh News';
+            
+            refreshButton.addEventListener('click', async function() {
+                this.disabled = true;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+                try {
+                    await fetchNews();
+                } finally {
+                    setTimeout(() => {
+                        this.disabled = false;
+                        this.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh News';
+                    }, 1000);
+                }
+            });
+            
+            newsSection.style.position = 'relative';
+            newsSection.appendChild(refreshButton);
+
+            // Initial news fetch
+            fetchNews();
         });
     </script>
 </body>
