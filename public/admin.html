@@ -1259,10 +1259,8 @@
                         // Update stats
                         updateDashboardStats(usersData, transactionsData);
                         
-                        // If using DataTable, reload the table
-                        if (dataTable) {
-                            populateUserTable(usersData);
-                        }
+                        // Reload the table
+                        renderUsersTable(usersData);
                         
                         // Show success toast
                         showToast("User deleted successfully!", "success");
