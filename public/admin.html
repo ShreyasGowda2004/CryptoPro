@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CryptoPro Admin Dashboard</title>
+    <!-- Modern fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <!-- Chart.js for analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --admin-primary: #7928ca;
+            --admin-secondary: #ff0080;
+            --admin-gradient: linear-gradient(to right, var(--admin-primary), var(--admin-secondary));
+            --dark-color: #0f172a;
+            --light-color: #f8fafc;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --card-border: rgba(0, 0, 0, 0.1);
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f2f5;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(121, 40, 202, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(255, 0, 128, 0.05) 0%, transparent 50%);
+            color: #333;
+            min-height: 100vh;
+        }
+        
+        .admin-sidebar {
+            background: var(--dark-color);
+            min-height: 100vh;
+            color: white;
+            padding: 2rem 0;
+            position: fixed;
+            width: 250px;
+            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+        
+        .admin-logo {
+            padding: 0 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .admin-logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--admin-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+            margin-left: 10px;
+        }
+        
+        .admin-nav {
+            margin-top: 2rem;
+        }
+        
+        .nav-item {
+            padding: 0.5rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 0.5rem;
+            border-left: 4px solid transparent;
+        }
+        
+        .nav-item.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-left-color: var(--admin-secondary);
+        }
+        
+        .nav-item:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        
+        .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .admin-content {
+            margin-left: 250px;
+            padding: 2rem;
+        }
+        
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eaeaea;
+        }
+        
+        .admin-title {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            border: none;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        
+        .card-header {
+            background: var(--admin-gradient);
+            color: white;
+            padding: 1.25rem 1.5rem;
+            border-bottom: none;
+            font-weight: 600;
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+        
+        .table {
+            margin-top: 0;
+            vertical-align: middle;
+        }
+        
+        .table thead th {
+            font-weight: 600;
+            background-color: rgba(0, 0, 0, 0.03);
+            border-bottom: 2px solid rgba(0, 0, 0, 0.08);
+            padding: 0.75rem 1rem;
+        }
+        
+        .table tbody tr:hover {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+        
+        .user-image {
+            border-radius: 8px;
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .user-image:hover {
+            transform: scale(1.05);
+        }
+        
+        .modal-content {
+            border-radius: 15px;
+            overflow: hidden;
+            border: none;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-header {
+            padding: 1.25rem 1.5rem;
+            background: var(--admin-gradient);
+            color: white;
+            border-bottom: none;
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+        }
+        
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-admin-primary {
+            background: var(--admin-gradient);
+            border: none;
+            color: white;
+            border-radius: 8px;
+            padding: 0.5rem 1.25rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-admin-primary:hover {
+            box-shadow: 0 4px 15px rgba(121, 40, 202, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1060;
+        }
+        
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            background: var(--admin-gradient);
+            color: white;
+        }
+        
+        .stat-info {
+            text-align: right;
+        }
+        
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 0.25rem;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        /* Analytics card styles */
+        .analytics-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 1.25rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .analytics-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+        
+        .analytics-title {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+        
+        .analytics-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            background: var(--admin-gradient);
+            color: white;
+        }
+        
+        .analytics-value {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <!-- Toast Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- Sidebar -->
+    <div class="admin-sidebar">
+        <div class="admin-logo">
+            <i class="fas fa-shield-alt fa-2x" style="color: var(--admin-secondary);"></i>
+            <span class="admin-logo-text">CryptoPro</span>
+        </div>
+        <div class="admin-nav">
+            <div class="nav-item active" data-section="dashboard">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+            </div>
+            <div class="nav-item" data-section="users">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-users"></i>
+                    <span>User Management</span>
+                </a>
+            </div>
+            <div class="nav-item" data-section="transactions">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span>Transactions</span>
+                </a>
+            </div>
+            <div class="nav-item" data-section="analytics">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Analytics</span>
+                </a>
+            </div>
+            <div class="nav-item" data-section="settings">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </div>
+            <div class="nav-item" id="logoutNav">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="admin-content">
+        <div class="admin-header">
+            <h1 class="admin-title">Admin Dashboard</h1>
+            <button class="btn btn-admin-primary" id="refreshData">
+                <i class="fas fa-sync-alt me-2"></i>Refresh Data
+            </button>
+        </div>
+
+        <!-- Content Sections -->
+        <div id="dashboardSection" class="content-section">
+            <!-- Stats Cards -->
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-value" id="totalUsers">0</div>
+                        <div class="stat-label">Total Users</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-exchange-alt"></i>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-value" id="totalTransactions">0</div>
+                        <div class="stat-label">Transactions</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-value" id="totalWallets">0</div>
+                        <div class="stat-label">Active Wallets</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-chart-pie"></i>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-value" id="verificationRate">0%</div>
+                        <div class="stat-label">Verification Rate</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transaction Analytics -->
+            <div class="card mb-4" id="transactionAnalyticsCard">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>Transaction Analytics</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <div class="analytics-card">
+                                <h6 class="analytics-title">Transaction Volume</h6>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="analytics-icon">
+                                        <i class="fas fa-money-bill-wave"></i>
+                                    </div>
+                                    <div class="analytics-value" id="totalVolume">$0.00</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="analytics-card">
+                                <h6 class="analytics-title">Average Transaction Size</h6>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="analytics-icon">
+                                        <i class="fas fa-calculator"></i>
+                                    </div>
+                                    <div class="analytics-value" id="avgTransaction">$0.00</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="analytics-card">
+                                <h6 class="analytics-title">Most Popular Coin</h6>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="analytics-icon">
+                                        <i class="fab fa-bitcoin"></i>
+                                    </div>
+                                    <div class="analytics-value" id="popularCoin">N/A</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="analytics-card">
+                                <h6 class="analytics-title">Last Transaction</h6>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="analytics-icon">
+                                        <i class="fas fa-clock"></i>
+                                    </div>
+                                    <div class="analytics-value" id="lastTransaction">N/A</div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Transaction Distribution Chart -->
+                        <div class="col-md-6 mb-4">
+                            <div class="analytics-card">
+                                <h6 class="analytics-title">Transaction Types</h6>
+                                <canvas id="transactionTypesChart" height="200"></canvas>
+                            </div>
+                        </div>
+                        <!-- Transaction by Day Chart -->
+                        <div class="col-md-6 mb-4">
+                            <div class="analytics-card">
+                                <h6 class="analytics-title">Transactions by Day</h6>
+                                <canvas id="transactionsByDayChart" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="usersSection" class="content-section" style="display: none;">
+            <!-- User Management Card -->
+        <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-users me-2"></i>User Management</h5>
+                    <div>
+                        <button class="btn btn-sm btn-light me-2" id="exportCSV">
+                            <i class="fas fa-file-csv me-1"></i>Export
+                        </button>
+                        <button class="btn btn-sm btn-light" id="printData">
+                            <i class="fas fa-print me-1"></i>Print
+                        </button>
+                    </div>
+            </div>
+            <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="usersTable">
+                            <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Contact Number</th>
+                            <th>ID Proof Number</th>
+                            <th>Date of Birth</th>
+                            <th>ID Proof Image</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userTableBody">
+                        <tr>
+                                <td colspan="8" class="text-center">
+                                    <div class="d-flex justify-content-center align-items-center py-3">
+                                        <div class="spinner-border text-primary me-3" role="status">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
+                                        <span>Loading user data...</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="transactionsSection" class="content-section" style="display: none;">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-exchange-alt me-2"></i>Transaction History</h5>
+                    <div>
+                        <button class="btn btn-sm btn-light me-2" id="exportTransactionsCSV">
+                            <i class="fas fa-file-csv me-1"></i>Export
+                        </button>
+                        <button class="btn btn-sm btn-light" id="printTransactions">
+                            <i class="fas fa-print me-1"></i>Print
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="transactionsTable">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Type</th>
+                                    <th>Coin</th>
+                                    <th>Quantity</th>
+                                    <th>Price</th>
+                                    <th>Total</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="transactionsTableBody">
+                                <tr>
+                                    <td colspan="8" class="text-center">
+                                        <div class="d-flex justify-content-center align-items-center py-3">
+                                            <div class="spinner-border text-primary me-3" role="status">
+                                                <span class="visually-hidden">Loading...</span>
+                                            </div>
+                                            <span>Loading transaction data...</span>
+                                        </div>
+                                    </td>
+                        </tr>
+                    </tbody>
+                </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="analyticsSection" class="content-section" style="display: none;">
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>Transaction Volume</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="analytics-value mb-3" id="totalVolumeAnalytics">$0.00</div>
+                            <canvas id="transactionVolumeChart" height="250"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-calculator me-2"></i>Average Transaction Size</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="analytics-value mb-3" id="avgTransactionAnalytics">$0.00</div>
+                            <canvas id="avgTransactionChart" height="250"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fab fa-bitcoin me-2"></i>Most Popular Coins</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="analytics-value mb-3" id="popularCoinAnalytics">N/A</div>
+                            <canvas id="popularCoinsChart" height="250"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-clock me-2"></i>Recent Transactions</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="recentTransactionsContainer">
+                                <div class="d-flex justify-content-center align-items-center py-3">
+                                    <div class="spinner-border text-primary me-3" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                    <span>Loading transaction data...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="settingsSection" class="content-section" style="display: none;">
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-user-cog me-2"></i>User Management Settings</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="list-group">
+                                <a href="#" class="list-group-item list-group-item-action" id="deleteUserSetting">
+                                    <div class="d-flex w-100 justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1"><i class="fas fa-user-times me-2"></i>Delete User</h6>
+                                            <p class="mb-1 text-muted small">Remove a user and all associated data</p>
+                                        </div>
+                                        <i class="fas fa-chevron-right"></i>
+                                    </div>
+                                </a>
+                                <a href="#" class="list-group-item list-group-item-action" id="resetPasswordSetting">
+                                    <div class="d-flex w-100 justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1"><i class="fas fa-key me-2"></i>Reset User Password</h6>
+                                            <p class="mb-1 text-muted small">Reset password for a specific user</p>
+                                        </div>
+                                        <i class="fas fa-chevron-right"></i>
+                                    </div>
+                                </a>
+                                <a href="#" class="list-group-item list-group-item-action" id="blockUserSetting">
+                                    <div class="d-flex w-100 justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1"><i class="fas fa-ban me-2"></i>Block/Unblock User</h6>
+                                            <p class="mb-1 text-muted small">Manage user access to the platform</p>
+                                        </div>
+                                        <i class="fas fa-chevron-right"></i>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-cogs me-2"></i>Platform Settings</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="list-group">
+                                <a href="#" class="list-group-item list-group-item-action" id="maintenanceModeSetting">
+                                    <div class="d-flex w-100 justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1"><i class="fas fa-tools me-2"></i>Maintenance Mode</h6>
+                                            <p class="mb-1 text-muted small">Enable/disable maintenance mode</p>
+                                        </div>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="maintenanceModeSwitch">
+                                        </div>
+                                    </div>
+                                </a>
+                                <a href="#" class="list-group-item list-group-item-action" id="notificationsSetting">
+                                    <div class="d-flex w-100 justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1"><i class="fas fa-bell me-2"></i>Notifications</h6>
+                                            <p class="mb-1 text-muted small">Configure system notifications</p>
+                                        </div>
+                                        <i class="fas fa-chevron-right"></i>
+                                    </div>
+                                </a>
+                                <a href="#" class="list-group-item list-group-item-action" id="backupSetting">
+                                    <div class="d-flex w-100 justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1"><i class="fas fa-database me-2"></i>Backup & Restore</h6>
+                                            <p class="mb-1 text-muted small">Manage system backups</p>
+                                        </div>
+                                        <i class="fas fa-chevron-right"></i>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Zoom Image -->
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageModalLabel">ID Proof Preview</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center p-0">
+                    <img src="" alt="ID Proof" id="modalImage" class="img-fluid">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <a href="#" class="btn btn-admin-primary" id="downloadImage">Download</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout Confirmation Modal -->
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="mb-4">
+                        <i class="fas fa-sign-out-alt fa-3x" style="color: var(--admin-secondary);"></i>
+                    </div>
+                    <p>Are you sure you want to logout from the admin dashboard?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-admin-primary" id="confirmLogout">Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                    <div class="mb-4">
+                        <i class="fas fa-user-times fa-3x text-danger"></i>
+                    </div>
+                <p>Are you sure you want to delete user <strong id="deleteUserEmail"></strong>?</p>
+                    <div class="alert alert-warning mt-3">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        This action cannot be undone. All user data will be permanently removed.
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDelete">
+                        <i class="fas fa-trash-alt me-2"></i>Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    $(document).ready(function () {
+    const API_URL = "https://cryptopro.onrender.com";
+        let userToDelete = null;
+        let usersData = [];
+        let transactionsData = [];
+        let dataTable = null;
+        let adminKey = null;
+        
+        // Navigation functionality
+        $(".nav-item").click(function() {
+            // Skip if this is the logout button
+            if ($(this).attr('id') === 'logoutNav') return;
+            
+            // Remove active class from all nav items
+            $(".nav-item").removeClass("active");
+            
+            // Add active class to clicked nav item
+            $(this).addClass("active");
+            
+            // Hide all content sections
+            $(".content-section").hide();
+            
+            // Show the selected section
+            const sectionName = $(this).data("section");
+            $(`#${sectionName}Section`).show();
+            
+            // Update header title
+            $(".admin-title").text(sectionName.charAt(0).toUpperCase() + sectionName.slice(1) + " Dashboard");
+        });
+        
+        // Logout functionality
+        $("#logoutNav").click(function() {
+            // Clear localStorage
+            localStorage.removeItem('token');
+            localStorage.removeItem('username');
+            localStorage.removeItem('isAdmin');
+            
+            // Redirect to login page
+            window.location.href = "loginadmin.html";
+        });
+
+        // Initialize DataTable
+        // let dataTable; // Removed duplicate declaration
+        
+        // Handle logout button click
+        $("#logoutNav, #confirmLogout").on("click", function () {
+            $('#logoutModal').modal('show');
+        });
+
+        $("#confirmLogout").on("click", function () {
+            window.location.href = "loginadmin.html";
+        });
+
+        // Refresh data
+        $("#refreshData").on("click", function() {
+            const $btn = $(this);
+            $btn.html('<i class="fas fa-spinner fa-spin me-2"></i>Refreshing...');
+            $btn.prop('disabled', true);
+            
+            fetchAllData().then(() => {
+                $btn.html('<i class="fas fa-sync-alt me-2"></i>Refresh Data');
+                $btn.prop('disabled', false);
+                showToast("Data refreshed successfully!", "success");
+            }).catch(() => {
+                $btn.html('<i class="fas fa-sync-alt me-2"></i>Refresh Data');
+                $btn.prop('disabled', false);
+                showToast("Failed to refresh data. Please try again.", "danger");
+            });
+        });
+
+        // Export to CSV
+        $("#exportCSV").on("click", function() {
+            if (usersData.length === 0) {
+                showToast("No data to export", "warning");
+                return;
+            }
+            
+            // Create CSV content
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "ID,Name,Email,Contact Number,ID Proof Number,Date of Birth\n";
+            
+            usersData.forEach((user, index) => {
+                const row = [
+                    index + 1,
+                    user.name,
+                    user.email,
+                    user.contactNumber,
+                    user.idProofNumber,
+                    new Date(user.dob).toLocaleDateString()
+                ].join(",");
+                csvContent += row + "\n";
+            });
+            
+            // Create download link
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "cryptopro_users.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showToast("CSV file exported successfully!", "success");
+        });
+
+        // Print data
+        $("#printData").on("click", function() {
+            window.print();
+        });
+
+        // Fetch Admin Key and all data
+        async function fetchAllData() {
+            try {
+                const config = await $.ajax({
+        url: `${API_URL}/admin/config`,
+                    method: "GET"
+                });
+                
+            adminKey = config.adminKey;
+
+                // Fetch users
+                const response = await $.ajax({
+                url: `${API_URL}/admin/users`,
+                method: "GET",
+                headers: {
+                    "Admin-Key": adminKey,
+                    }
+                });
+
+                    if (response.success && response.users.length > 0) {
+                    usersData = response.users;
+                    renderUsersTable(response.users);
+                    
+                    // Fetch transaction data
+                    try {
+                        const txResponse = await $.ajax({
+                            url: `${API_URL}/admin/transactions`,
+                            method: "GET",
+                            headers: {
+                                "Admin-Key": adminKey,
+                            }
+                        });
+                        
+                        if (txResponse.success && txResponse.transactions) {
+                            updateDashboardStats(response.users, txResponse.transactions);
+                        } else {
+                            // Fallback to simulated data if API fails
+                            updateDashboardStats(response.users);
+                        }
+                    } catch (txError) {
+                        console.error("Error fetching transactions:", txError);
+                        // Fallback to simulated data
+                        updateDashboardStats(response.users);
+                    }
+                } else {
+                    $("#userTableBody").html('<tr><td colspan="8" class="text-center">No users found.</td></tr>');
+                    resetDashboardStats();
+                }
+                
+                return true;
+            } catch (error) {
+                console.error("Error fetching data:", error);
+                $("#userTableBody").html('<tr><td colspan="8" class="text-center text-danger">Failed to load data.</td></tr>');
+                resetDashboardStats();
+                return false;
+            }
+        }
+
+        // Render users table
+        function renderUsersTable(users) {
+            if (dataTable) {
+                dataTable.destroy();
+            }
+            
+                        let rows = "";
+            users.forEach((user, index) => {
+                            rows += `
+                                <tr id="user-${user.email.replace(/[@.]/g, '_')}">
+                                    <td>${index + 1}</td>
+                        <td>${user.name || 'N/A'}</td>
+                                    <td>${user.email}</td>
+                        <td>${user.contactNumber || 'N/A'}</td>
+                        <td>${user.idProofNumber || 'N/A'}</td>
+                        <td>${user.dob ? new Date(user.dob).toLocaleDateString() : 'N/A'}</td>
+                        <td class="text-center">
+                                        ${
+                                            user.idProofImage
+                                    ? `<img src="${user.idProofImage}" alt="ID Proof" class="user-image zoomable" data-image="${user.idProofImage}" data-user="${user.name}" />`
+                                    : '<span class="badge bg-warning">No Image</span>'
+                                        }
+                                    </td>
+                                    <td>
+                            <div class="d-flex gap-2">
+                                        ${
+                                            user.idProofImage
+                                        ? `<a href="${user.idProofImage}" class="btn btn-sm btn-primary" download="ID_Proof_${user.name}.jpg">
+                                              <i class="fas fa-download"></i>
+                                           </a>`
+                                                : ""
+                                        }
+                                <button class="btn btn-sm btn-danger delete-user" data-email="${user.email}">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                                    </td>
+                                </tr>
+                            `;
+                        });
+
+                        $("#userTableBody").html(rows);
+            
+            // Initialize DataTable
+            dataTable = $('#usersTable').DataTable({
+                responsive: true,
+                pageLength: 10,
+                language: {
+                    search: "_INPUT_",
+                    searchPlaceholder: "Search users...",
+                    lengthMenu: "Show _MENU_ users per page",
+                    info: "Showing _START_ to _END_ of _TOTAL_ users",
+                    infoEmpty: "No users found",
+                    infoFiltered: "(filtered from _MAX_ total users)",
+                    paginate: {
+                        first: '<i class="fas fa-angle-double-left"></i>',
+                        previous: '<i class="fas fa-angle-left"></i>',
+                        next: '<i class="fas fa-angle-right"></i>',
+                        last: '<i class="fas fa-angle-double-right"></i>'
+                    }
+                }
+            });
+
+                        // Image Zoom Functionality
+                        $(".zoomable").on("click", function () {
+                            const imageSrc = $(this).data("image");
+                const userName = $(this).data("user");
+                            $("#modalImage").attr("src", imageSrc);
+                $("#imageModalLabel").text(`ID Proof - ${userName}`);
+                $("#downloadImage").attr("href", imageSrc).attr("download", `ID_Proof_${userName}.jpg`);
+                            $("#imageModal").modal("show");
+                        });
+
+                        // Delete User - Open Confirmation Modal
+                        $(".delete-user").on("click", function () {
+                            userToDelete = $(this).data("email");
+                const userName = $(this).closest("tr").find("td:nth-child(2)").text();
+                $("#deleteModalLabel").text(`Delete User: ${userName}`);
+                            $("#deleteUserEmail").text(userToDelete);
+                            $("#deleteModal").modal("show");
+                        });
+        }
+
+        // Update dashboard stats
+        function updateDashboardStats(users, transactions) {
+            // Total users
+            $("#totalUsers").text(users.length);
+            
+            // Count wallets (actual count if available, otherwise simulated)
+            const uniqueWalletUsers = new Set(users.filter(user => user.walletId).map(user => user.id || user.email));
+            const walletCount = uniqueWalletUsers.size > 0 ? uniqueWalletUsers.size : Math.floor(users.length * 0.85);
+            $("#totalWallets").text(walletCount);
+            
+            // Count transactions (actual if available, otherwise simulated)
+            const transactionCount = transactions ? transactions.length : Math.floor(Math.random() * 50 * users.length);
+            $("#totalTransactions").text(transactionCount);
+            
+            // Verification rate (based on ID proof images)
+            const verifiedCount = users.filter(user => user.idProofImage).length;
+            const verificationRate = users.length > 0 ? Math.round((verifiedCount / users.length) * 100) : 0;
+            $("#verificationRate").text(`${verificationRate}%`);
+            
+            // Update analytics display if transactions available
+            if (transactions && transactions.length > 0) {
+                let totalVolume = 0;
+                const coinCounts = {};
+                let lastTransactionDate = null;
+                let lastTransactionInfo = "";
+                
+                transactions.forEach(tx => {
+                    // Calculate transaction volume
+                    const amount = parseFloat(tx.amount || 0);
+                    const price = parseFloat(tx.price?.replace(/[^0-9.-]+/g, '') || 0);
+                    
+                    if (!isNaN(amount) && !isNaN(price)) {
+                        totalVolume += amount * price;
+                    }
+                    
+                    // Track crypto counts for popularity
+                    const coin = tx.cryptocurrency?.split(' ')[0];
+                    if (coin) {
+                        coinCounts[coin] = (coinCounts[coin] || 0) + 1;
+                    }
+                    
+                    // Track most recent transaction
+                    const txDate = new Date(tx.date || tx.createdAt || 0);
+                    if (!lastTransactionDate || txDate > lastTransactionDate) {
+                        lastTransactionDate = txDate;
+                        const type = tx.type || 'Unknown';
+                        const coin = tx.cryptocurrency?.split(' ')[0] || 'Unknown';
+                        lastTransactionInfo = `${type} ${coin}`;
+                    }
+                });
+                
+                // Update transaction volume
+                $("#totalVolumeAnalytics").text('$' + totalVolume.toFixed(2));
+                
+                // Update average transaction size
+                const avgTx = totalVolume / transactions.length;
+                $("#avgTransactionAnalytics").text('$' + avgTx.toFixed(2));
+                
+                // Find most popular coin
+                let popularCoin = 'N/A';
+                let maxCount = 0;
+                
+                for (const [coin, count] of Object.entries(coinCounts)) {
+                    if (count > maxCount) {
+                        maxCount = count;
+                        popularCoin = coin;
+                    }
+                }
+                
+                $("#popularCoinAnalytics").text(popularCoin);
+                
+                // Format and display last transaction
+                if (lastTransactionDate) {
+                    const timeAgo = timeSince(lastTransactionDate);
+                    $("#lastTransaction").text(`${lastTransactionInfo} (${timeAgo})`);
+                } else {
+                    $("#lastTransaction").text('N/A');
+                }
+                
+                // Show analytics card
+                $("#transactionAnalyticsCard").show();
+                
+                // Create transaction type chart
+                const transactionTypesChart = document.getElementById('transactionTypesChart').getContext('2d');
+                const transactionTypesData = {
+                    labels: Object.keys(coinCounts),
+                    datasets: [{
+                        label: 'Transaction Types',
+                        data: Object.values(coinCounts),
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                };
+                const transactionTypesOptions = {
+                    animation: {
+                        duration: 2000
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                };
+                const transactionTypesChartInstance = new Chart(transactionTypesChart, {
+                    type: 'pie',
+                    data: transactionTypesData,
+                    options: transactionTypesOptions
+                });
+                
+                // Create transactions by day chart
+                const transactionsByDayChart = document.getElementById('transactionsByDayChart').getContext('2d');
+                const transactionsByDayData = {
+                    labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+                    datasets: [{
+                        label: 'Transactions by Day',
+                        data: [10, 20, 15, 30, 25, 20, 15],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)',
+                            'rgba(255, 99, 132, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)',
+                            'rgba(255, 99, 132, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                };
+                const transactionsByDayOptions = {
+                    animation: {
+                        duration: 2000
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                };
+                const transactionsByDayChartInstance = new Chart(transactionsByDayChart, {
+                    type: 'bar',
+                    data: transactionsByDayData,
+                    options: transactionsByDayOptions
+                });
+            } else {
+                // Hide or show "no data" in analytics card
+                $("#totalVolumeAnalytics").text('$0.00');
+                $("#avgTransactionAnalytics").text('$0.00');
+                $("#popularCoinAnalytics").text('N/A');
+                $("#lastTransaction").text('N/A');
+            }
+        }
+        
+        // Helper function to format time since a date
+        function timeSince(date) {
+            const seconds = Math.floor((new Date() - date) / 1000);
+            
+            let interval = seconds / 31536000; // seconds in year
+            if (interval > 1) return Math.floor(interval) + " years ago";
+            
+            interval = seconds / 2592000; // seconds in month
+            if (interval > 1) return Math.floor(interval) + " months ago";
+            
+            interval = seconds / 86400; // seconds in day
+            if (interval > 1) return Math.floor(interval) + " days ago";
+            
+            interval = seconds / 3600; // seconds in hour
+            if (interval > 1) return Math.floor(interval) + " hours ago";
+            
+            interval = seconds / 60; // seconds in minute
+            if (interval > 1) return Math.floor(interval) + " minutes ago";
+            
+            return Math.floor(seconds) + " seconds ago";
+        }
+
+        // Reset dashboard stats
+        function resetDashboardStats() {
+            $("#totalUsers").text("0");
+            $("#totalWallets").text("0");
+            $("#totalTransactions").text("0");
+            $("#verificationRate").text("0%");
+        }
+
+        // Handle confirmation delete
+        $("#confirmDelete").on("click", async function () {
+            if (userToDelete) {
+                $("#confirmDelete").prop("disabled", true).html('<i class="fas fa-spinner fa-spin me-2"></i>Deleting...');
+                
+                try {
+                    // Make API call to delete user
+                    const response = await fetch(`${API_URL}/admin/users/${encodeURIComponent(userToDelete)}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'Admin-Key': adminKey
+                        }
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (response.ok && data.success) {
+                        // Remove user from array
+                        usersData = usersData.filter(user => user.email !== userToDelete);
+                        
+                        // Update stats
+                        updateDashboardStats(usersData, transactionsData);
+                        
+                        // If using DataTable, reload the table
+                        if (dataTable) {
+                            populateUserTable(usersData);
+                        }
+                        
+                        // Show success toast
+                        showToast("User deleted successfully!", "success");
+                        
+                        // Reset and close modal
+                        $("#confirmDelete").prop("disabled", false).html('<i class="fas fa-trash-alt me-2"></i>Delete');
+                        $("#deleteModal").modal("hide");
+                        userToDelete = null;
+                    } else {
+                        // Handle error response
+                        throw new Error(data.message || 'Failed to delete user');
+                    }
+                } catch (error) {
+                    console.error("Error deleting user:", error);
+                    showToast(error.message || "Failed to delete user. Please try again.", "danger");
+                    
+                    // Reset button state
+                    $("#confirmDelete").prop("disabled", false).html('<i class="fas fa-trash-alt me-2"></i>Delete');
+                }
+            }
+        });
+
+// Function to show Bootstrap toast notification
+function showToast(message, type = "success") {
+    const toastHTML = `
+                <div class="toast align-items-center text-bg-${type} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                        <div class="toast-body">
+                            <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'danger' ? 'fa-exclamation-circle' : 'fa-info-circle'} me-2"></i>
+                            ${message}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    `;
+
+    $("#toastContainer").html(toastHTML);
+            const toast = new bootstrap.Toast(document.querySelector('.toast'), {
+                delay: 3000
+            });
+            toast.show();
+}
+
+        // Initial data fetch
+        fetchAllData();
+    });
+    </script>
+    <!-- Bootstrap JS Bundle with DataTables -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+</body>
+</html>

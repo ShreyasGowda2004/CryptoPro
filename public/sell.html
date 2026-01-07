@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sell Cryptocurrency - CryptoPro</title>
+    <!-- Modern fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Animate.css for additional animations -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Migration CSS -->
+    <link href="css/migration.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3a7bd5;
+            --secondary-color: #00d2ff;
+            --accent-color: #00f2fe;
+            --dark-color: #0f172a;
+            --light-color: #f8fafc;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --card-bg: rgba(30, 41, 59, 0.8);
+            --card-border: rgba(255, 255, 255, 0.1);
+        }
+        
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: #0f172a;
+            background-image: 
+              radial-gradient(circle at 25% 25%, rgba(58, 123, 213, 0.05) 0%, transparent 50%),
+              radial-gradient(circle at 75% 75%, rgba(0, 210, 255, 0.05) 0%, transparent 50%);
+            color: var(--light-color);
+            min-height: 100vh;
+            padding: 0;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.2rem 2rem;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            animation: slideDown 0.8s ease-out;
+        }
+        
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        
+        @media (min-width: 992px) {
+            .main-content {
+                flex-direction: row;
+            }
+            
+            .market-info-section {
+                flex: 1;
+            }
+            
+            .order-section {
+                flex: 1;
+            }
+        }
+        
+        .section-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            border: 1px solid var(--card-border);
+            padding: 1.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            color: var(--light-color);
+        }
+        
+        .section-title i {
+            margin-right: 0.75rem;
+            color: var(--secondary-color);
+        }
+        
+        /* Form styling */
+        .form-control {
+            background-color: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--light-color);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            background-color: rgba(30, 41, 59, 0.7);
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 0.25rem rgba(0, 210, 255, 0.15);
+            color: var(--light-color);
+        }
+
+        .form-control[readonly] {
+            background-color: rgba(15, 23, 42, 0.6);
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .form-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        
+        .order-divider {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin: 1.5rem 0;
+        }
+        
+        /* Button styling */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            border: none;
+            box-shadow: 0 4px 10px rgba(0, 210, 255, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 210, 255, 0.4);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(to right, #e11d48, #f43f5e);
+            border: none;
+            box-shadow: 0 4px 10px rgba(225, 29, 72, 0.3);
+        }
+        
+        .btn-danger:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(225, 29, 72, 0.4);
+        }
+        
+        .btn-outline-secondary {
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--light-color);
+        }
+        
+        .btn-outline-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--light-color);
+        }
+        
+        /* Modal styling */
+        .modal-content {
+            background: rgba(30, 41, 59, 0.95);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-header {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            color: white;
+        }
+        
+        .modal-header.danger-header {
+            background: linear-gradient(to right, #e11d48, #f43f5e);
+        }
+
+        .modal-body {
+            color: var(--light-color);
+            padding: 1.5rem;
+        }
+        
+        .modal-footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Market info card */
+        .market-info-card {
+            background-color: rgba(30, 41, 59, 0.5);
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+        }
+        
+        .info-row:last-child {
+            margin-bottom: 0;
+        }
+        
+        .info-label {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.95rem;
+        }
+        
+        .info-value {
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideDown {
+            from { transform: translateY(-50px); }
+            to { transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <a href="dashboard.html" class="text-decoration-none d-flex align-items-center gap-2">
+            <i class="fas fa-coins fs-4" style="color: var(--secondary-color);"></i>
+            <h1 class="header-title mb-0">CryptoPro</h1>
+        </a>
+        <h2 class="text-light m-0 fs-4 d-flex align-items-center">
+            <i class="fas fa-exchange-alt me-2" style="color: var(--secondary-color);"></i>
+            Sell <span id="coinNameTitle" class="ms-2 text-white"></span>
+        </h2>
+        <a href="dashboard.html" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+        </a>
+    </header>
+
+    <div class="container">
+        <div class="main-content">
+            <!-- Market Info Section -->
+            <div class="market-info-section">
+                <div class="section-card">
+                    <h2 class="section-title"><i class="fas fa-chart-line"></i>Market Information</h2>
+                    <div class="market-info-card">
+                        <div class="info-row">
+                            <span class="info-label">Coin</span>
+                            <span class="info-value" id="marketCoinName"></span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Current Price</span>
+                            <span class="info-value" id="marketPrice"></span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">24h Change</span>
+                            <span class="info-value" id="marketChange"></span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Market Cap</span>
+                            <span class="info-value" id="marketCap"></span>
+                        </div>
+                    </div>
+                    
+                    <h3 class="mt-4 mb-3 fs-5">Portfolio Information</h3>
+                    <div class="market-info-card">
+                        <div class="info-row">
+                            <span class="info-label">Your Holdings</span>
+                            <span class="info-value" id="portfolioHoldings"></span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Current Value</span>
+                            <span class="info-value" id="portfolioValue"></span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Average Purchase Price</span>
+                            <span class="info-value" id="portfolioAvgPrice">$0.00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sell Form Section -->
+            <div class="order-section">
+                <div class="section-card">
+                    <h2 class="section-title"><i class="fas fa-cash-register"></i>Sell Order</h2>
+                    <form id="sellForm" class="mt-4">
+                        <div class="mb-3">
+                            <label for="emailId" class="form-label">Account Email</label>
+                            <input type="email" id="emailId" class="form-control" readonly />
+                        </div>
+                        
+            <div class="mb-3">
+                <label for="cryptoName" class="form-label">Coin</label>
+                            <div class="input-group">
+                                <span class="input-group-text" style="background-color: rgba(30, 41, 59, 0.5); border: 1px solid rgba(255, 255, 255, 0.1); color: var(--light-color);">
+                                    <i id="coinIcon" class="fab fa-bitcoin"></i>
+                                </span>
+                                <input type="text" id="cryptoName" class="form-control" readonly />
+                            </div>
+            </div>
+                        
+            <div class="mb-3">
+                            <label for="availableQuantity" class="form-label">Available Balance</label>
+                            <div class="input-group">
+                                <span class="input-group-text" style="background-color: rgba(30, 41, 59, 0.5); border: 1px solid rgba(255, 255, 255, 0.1); color: var(--light-color);">
+                                    <i class="fas fa-wallet"></i>
+                                </span>
+                                <input type="text" id="availableQuantity" class="form-control" readonly />
+                            </div>
+            </div>
+                        
+            <div class="mb-3">
+                            <label for="cryptoPrice" class="form-label">Current Price (USD)</label>
+                            <div class="input-group">
+                                <span class="input-group-text" style="background-color: rgba(30, 41, 59, 0.5); border: 1px solid rgba(255, 255, 255, 0.1); color: var(--light-color);">$</span>
+                                <input type="text" id="cryptoPrice" class="form-control" readonly />
+                            </div>
+            </div>
+                        
+                        <div class="order-divider"></div>
+                        
+            <div class="mb-3">
+                            <label for="quantity" class="form-label">Quantity to Sell</label>
+                            <input type="number" id="quantity" class="form-control" min="0.0001" step="0.0001" required oninput="updateTotalPrice()" />
+                            <small class="form-text text-muted">Enter the amount you want to sell</small>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="totalPrice" class="form-label">Total Proceeds (USD)</label>
+                            <div class="input-group">
+                                <span class="input-group-text" style="background-color: rgba(30, 41, 59, 0.5); border: 1px solid rgba(255, 255, 255, 0.1); color: var(--light-color);">$</span>
+                                <input type="text" id="totalPrice" class="form-control" readonly />
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-3 mt-4">
+                            <button type="button" class="btn btn-danger" id="confirmSaleBtn" onclick="confirmSale()">
+                                <i class="fas fa-check-circle me-2"></i>Confirm Sale
+                            </button>
+                            <a href="dashboard.html" class="btn btn-outline-secondary">
+                                <i class="fas fa-times-circle me-2"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            </div>
+    </div>
+
+    <!-- Sale Success Modal -->
+    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="successModalLabel">
+                        <i class="fas fa-check-circle me-2"></i>Sale Successful
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" onclick="redirectToDashboard()"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-4">
+                        <div class="animate__animated animate__bounceIn" style="display: inline-block;">
+                            <i class="fas fa-check-circle fa-4x text-success mb-3"></i>
+                        </div>
+                        <h4>Transaction Complete!</h4>
+                        <p class="text-muted">Your sale has been processed successfully</p>
+                    </div>
+                    
+                    <div class="bg-dark p-3 rounded mb-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Coin:</span>
+                            <span class="fw-bold" id="modalCryptoName"></span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Quantity:</span>
+                            <span class="fw-bold" id="modalQuantity"></span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span>Total Proceeds:</span>
+                            <span class="fw-bold" id="modalTotalPrice"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-3 d-flex justify-content-center align-items-center">
+                        <div class="spinner-border text-info me-2" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mb-0">Redirecting to dashboard...</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="redirectToDashboard()">
+                        <i class="fas fa-tachometer-alt me-2"></i>Go to Dashboard
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+  <!-- Insufficient Quantity Modal -->
+<div class="modal fade" id="failureModal" tabindex="-1" aria-labelledby="failureModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+                <div class="modal-header danger-header">
+                    <h5 class="modal-title" id="failureModalLabel">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Sale Failed
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                    <div class="text-center mb-4">
+                        <div class="animate__animated animate__headShake" style="display: inline-block;">
+                            <i class="fas fa-exclamation-circle fa-4x text-danger mb-3"></i>
+                        </div>
+                        <h4>Insufficient Balance</h4>
+                        <p class="text-muted">Your sale could not be completed due to insufficient balance.</p>
+                    </div>
+                    
+                    <div class="bg-dark p-3 rounded">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Available:</span>
+                            <span class="fw-bold" id="modalAvailableBalance"></span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span>Attempted to Sell:</span>
+                            <span class="fw-bold" id="modalAttemptedSell"></span>
+                        </div>
+                    </div>
+            </div>
+            <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Database JS -->
+    <script src="js/database.js"></script>
+    <script>
+        /* Global Variables & Mappings */
+        const urlParams = new URLSearchParams(window.location.search);
+        const cryptoName = urlParams.get('coin'); // e.g., "Bitcoin"
+        let currentUser = null;
+        let currentPrice = 0;
+
+        const coinSymbols = {
+            Bitcoin: 'BTC',
+            Ethereum: 'ETH',
+            Dogecoin: 'DOGE',
+            Ripple: 'XRP',
+            Cardano: 'ADA',
+            Solana: 'SOL',
+            Polkadot: 'DOT',
+            Litecoin: 'LTC'
+        };
+        
+        const coinIcons = {
+            Bitcoin: 'fab fa-bitcoin',
+            Ethereum: 'fab fa-ethereum',
+            Dogecoin: 'fas fa-dog',
+            Solana: 'fas fa-sun',
+            Ripple: 'fas fa-water',
+            Cardano: 'fas fa-globe',
+            Polkadot: 'fas fa-dot-circle',
+            Litecoin: 'fas fa-litecoin-sign'
+        };
+        
+        function getApiBaseUrl() {
+            return window.CorsHelper?.API_BASE_URL || 'https://cryptopro.onrender.com';
+        }
+
+        /* Fetch Live Price */
+async function fetchLivePrice() {
+    const cryptoSymbol = coinSymbols[cryptoName];
+    if (!cryptoSymbol) {
+        alert(`Unknown coin: ${cryptoName}`);
+        document.getElementById('cryptoPrice').value = "N/A";
+        return;
+    }
+            
+            // Update UI with coin name and icon
+            document.getElementById('coinNameTitle').textContent = cryptoName;
+            document.getElementById('marketCoinName').textContent = `${cryptoName} (${cryptoSymbol})`;
+            document.getElementById('coinIcon').className = coinIcons[cryptoName] || 'fas fa-coins';
+
+    try {
+                const response = await fetch(`${getApiBaseUrl()}/crypto-price?coin=${cryptoSymbol}`);
+        const data = await response.json();
+
+        if (response.ok) {
+                    currentPrice = data.price;
+                    document.getElementById('cryptoName').value = `${cryptoName} (${cryptoSymbol})`;
+                    document.getElementById('cryptoPrice').value = currentPrice.toFixed(2);
+                    document.getElementById('marketPrice').textContent = `$${currentPrice.toFixed(2)}`;
+                    
+                    // Simulate some market data for display
+                    const randomChange = (Math.random() * 10 - 5).toFixed(2);
+                    const isPositive = parseFloat(randomChange) >= 0;
+                    document.getElementById('marketChange').textContent = `${isPositive ? '+' : ''}${randomChange}%`;
+                    document.getElementById('marketChange').className = `info-value ${isPositive ? 'text-success' : 'text-danger'}`;
+                    
+                    // Simulate market cap
+                    const marketCap = (currentPrice * (Math.random() * 10000000 + 1000000)).toFixed(0);
+                    document.getElementById('marketCap').textContent = `$${formatLargeNumber(marketCap)}`;
+                    
+                    updatePortfolioInfo();
+        } else {
+            alert(data.message || 'Failed to fetch live price.');
+            document.getElementById('cryptoPrice').value = "N/A";
+        }
+    } catch (err) {
+                console.error("Error fetching live price:", err);
+        alert('An error occurred while fetching live price.');
+        document.getElementById('cryptoPrice').value = "N/A";
+    }
+}
+
+        /* Fetch User Details */
+async function fetchUserDetails() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert('Please log in to access this page.');
+        window.location.href = 'login.html';
+        return;
+    }
+
+    try {
+        // Fetch user details from server
+        const response = await fetch(`${getApiBaseUrl()}/user`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch user details from server');
+        }
+
+        const userData = await response.json();
+        
+        if (!userData.success) {
+            throw new Error(userData.message || 'Failed to fetch user data');
+        }
+        
+        // Get user email from response
+        const email = userData.user.email;
+        
+        // Extract user ID from token
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const userId = payload.id || payload.userId || payload.sub;
+        
+        currentUser = { id: userId, email: email };
+        document.getElementById('emailId').value = email;
+        
+        // Fetch wallet data from server
+        const walletResponse = await fetch(`${getApiBaseUrl()}/wallet`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        if (!walletResponse.ok) {
+            throw new Error('Failed to fetch wallet data from server');
+        }
+        
+        const walletData = await walletResponse.json();
+        
+        if (!walletData.success) {
+            throw new Error(walletData.message || 'Failed to fetch wallet data');
+        }
+        
+        // Find the coin in the user's purchases
+        const purchases = walletData.wallet || [];
+        let totalQuantity = 0;
+        let totalInvested = 0;
+        
+        purchases.forEach(purchase => {
+            if (purchase.coin === cryptoName) {
+                totalQuantity += purchase.quantity;
+                totalInvested += purchase.totalPrice;
+            }
+        });
+        
+        // Update form fields
+        document.getElementById('availableQuantity').value = totalQuantity.toFixed(8);
+        updatePortfolioInfo();
+    } catch (err) {
+        console.error('Error fetching user details:', err);
+        alert('Failed to fetch user details: ' + err.message);
+        window.location.href = 'login.html';
+    }
+}
+
+        /* Update Portfolio Information */
+        function updatePortfolioInfo() {
+            if (!currentUser) return;
+            
+            // Get available quantity from the form (which was populated from the server)
+            const availableQuantity = parseFloat(document.getElementById('availableQuantity').value) || 0;
+            const symbol = coinSymbols[cryptoName] || '';
+            
+            // Update portfolio information
+            document.getElementById('portfolioHoldings').textContent = `${availableQuantity.toFixed(8)} ${symbol}`;
+            
+            if (currentPrice > 0) {
+                const currentValue = availableQuantity * currentPrice;
+                document.getElementById('portfolioValue').textContent = `$${currentValue.toFixed(2)}`;
+                
+                // Calculate average purchase price if any holdings
+                // This will be calculated when we fetch user details
+                const avgPriceElement = document.getElementById('portfolioAvgPrice');
+                if (avgPriceElement.textContent === 'N/A' && availableQuantity > 0) {
+                    // We need to calculate the average price
+                    // This should be done when fetching user details
+                    fetchUserDetailsAndUpdateAvgPrice();
+                }
+            }
+        }
+        
+        /* Fetch user details and update average price */
+        async function fetchUserDetailsAndUpdateAvgPrice() {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+            
+            try {
+                // Fetch wallet data from server
+                const walletResponse = await fetch(`${getApiBaseUrl()}/wallet`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (!walletResponse.ok) {
+                    throw new Error('Failed to fetch wallet data from server');
+                }
+                
+                const walletData = await walletResponse.json();
+                
+                if (!walletData.success) {
+                    throw new Error(walletData.message || 'Failed to fetch wallet data');
+                }
+                
+                // Find the coin in the user's purchases
+                const purchases = walletData.wallet || [];
+                let totalQuantity = 0;
+                let totalInvested = 0;
+                
+                purchases.forEach(purchase => {
+                    if (purchase.coin === cryptoName && purchase.type === 'Buy') {
+                        totalQuantity += purchase.quantity;
+                        totalInvested += purchase.totalPrice;
+                    } else if (purchase.coin === cryptoName && purchase.type === 'Sell') {
+                        totalQuantity -= purchase.quantity;
+                        // For sells, we don't adjust totalInvested as that would skew the average price
+                    }
+                });
+                
+                // Calculate and update average price
+                if (totalQuantity > 0 && totalInvested > 0) {
+                    const avgPrice = totalInvested / totalQuantity;
+                    document.getElementById('portfolioAvgPrice').textContent = `$${avgPrice.toFixed(2)}`;
+                } else {
+                    document.getElementById('portfolioAvgPrice').textContent = 'N/A';
+                }
+            } catch (err) {
+                console.error('Error fetching wallet details for avg price:', err);
+                document.getElementById('portfolioAvgPrice').textContent = 'N/A';
+            }
+        }
+
+        /* Update Total Price */
+function updateTotalPrice() {
+    const quantity = Math.max(0, parseFloat(document.getElementById('quantity').value) || 0);
+    const cryptoPrice = parseFloat(document.getElementById('cryptoPrice').value);
+            const totalPrice = (quantity * cryptoPrice).toFixed(2);
+            document.getElementById('totalPrice').value = totalPrice;
+}
+
+        /* Confirm Sale Function */
+        async function confirmSale() {
+    if (!currentUser) {
+        alert('Please log in to sell cryptocurrency');
+        return;
+    }
+    
+    const quantityInput = document.getElementById('quantity');
+    const quantity = parseFloat(quantityInput.value);
+    
+    if (isNaN(quantity) || quantity <= 0) {
+        alert('Please enter a valid quantity');
+        return;
+    }
+    
+    const totalPrice = parseFloat(document.getElementById('totalPrice').value);
+    const availableQuantity = parseFloat(document.getElementById('availableQuantity').value);
+    
+    if (quantity > availableQuantity) {
+                // Show insufficient quantity modal with details
+                document.getElementById('modalAvailableBalance').textContent = `${availableQuantity} ${coinSymbols[cryptoName]}`;
+                document.getElementById('modalAttemptedSell').textContent = `${quantity} ${coinSymbols[cryptoName]}`;
+                
+        new bootstrap.Modal(document.getElementById('failureModal')).show();
+        return;
+    }
+    
+            try {
+                // Add a loading indicator to the sell button
+                const sellButton = document.getElementById('confirmSaleBtn');
+                const originalButtonText = sellButton.innerHTML;
+                sellButton.disabled = true;
+                sellButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...';
+                
+                // Get token for authentication
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    throw new Error('Authentication token not found');
+                }
+                
+                // Create transaction data
+                const transactionData = {
+                    coin: cryptoName,
+                    quantity: quantity,
+                    totalPrice: totalPrice,
+                    type: 'Sell'
+                };
+                
+                // Send sell request to server
+                const response = await fetch(`${getApiBaseUrl()}/sell`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(transactionData)
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Failed to process sale');
+                }
+                
+                const result = await response.json();
+                
+                if (!result.success) {
+                    throw new Error(result.message || 'Failed to process sale');
+                }
+                
+                // Restore button state
+                sellButton.disabled = false;
+                sellButton.innerHTML = originalButtonText;
+                
+                // Update modal content
+                document.getElementById('modalCryptoName').textContent = `${cryptoName} (${coinSymbols[cryptoName]})`;
+                document.getElementById('modalQuantity').textContent = `${quantity} ${coinSymbols[cryptoName]}`;
+                document.getElementById('modalTotalPrice').textContent = `$${totalPrice.toFixed(2)}`;
+    
+                // Show success modal
+                const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                successModal.show();
+                
+                // Redirect to dashboard after 2 seconds
+                setTimeout(redirectToDashboard, 2000);
+            } catch (error) {
+                console.error('Error processing sale:', error);
+                alert('An error occurred while processing your sale. Please try again.');
+                
+                // Restore button if error occurs
+                const sellButton = document.getElementById('confirmSaleBtn');
+                sellButton.disabled = false;
+                sellButton.innerHTML = 'Confirm Sale';
+            }
+        }
+
+        /* Redirect To Dashboard */
+function redirectToDashboard() {
+    window.location.href = 'dashboard.html';
+}
+
+        /* Format Large Numbers */
+        function formatLargeNumber(num) {
+            if (num >= 1e9) return (num / 1e9).toFixed(2) + 'B';
+            if (num >= 1e6) return (num / 1e6).toFixed(2) + 'M';
+            if (num >= 1e3) return (num / 1e3).toFixed(2) + 'K';
+            return num.toFixed(2);
+        }
+
+        /* Initialize Page */
+window.onload = () => {
+    fetchLivePrice();
+    fetchUserDetails();
+};
+    </script>
+    <!-- Wallet Migration Utility -->
+    <script src="js/wallet-migration.js"></script>
+</body>
+</html>

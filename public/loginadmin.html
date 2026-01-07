@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CryptoPro - Admin Login</title>
+    <!-- Modern fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <!-- CORS Helper Script -->
+    <script src="js/cors-helper.js"></script>
+    <style>
+        :root {
+            --primary-color: #3a7bd5;
+            --secondary-color: #00d2ff;
+            --accent-color: #00f2fe;
+            --dark-color: #0f172a;
+            --light-color: #f8fafc;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --admin-primary: #7928ca;
+            --admin-secondary: #ff0080;
+        }
+        
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.9)), url('images/crypto-banner.jpg') no-repeat center center fixed;
+            background-size: cover;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(121, 40, 202, 0.1) 0%, transparent 70%);
+            z-index: -1;
+        }
+        
+        .login-container {
+            width: 100%;
+            max-width: 450px;
+            padding: 2rem;
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        .login-box {
+            background: rgba(30, 41, 59, 0.8);
+            padding: 2.5rem;
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .login-box:hover {
+            transform: translateY(-5px);
+        }
+        
+        .login-logo {
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--admin-primary), var(--admin-secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+        
+        .login-logo i {
+            margin-right: 10px;
+            font-size: 1.8rem;
+        }
+        
+        .admin-badge {
+            display: inline-block;
+            background: linear-gradient(to right, var(--admin-primary), var(--admin-secondary));
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 10px rgba(121, 40, 202, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .login-box h2 {
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            color: var(--light-color);
+            font-size: 1.5rem;
+        }
+        
+        .form-floating {
+            margin-bottom: 1.25rem;
+        }
+        
+        .form-control {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--light-color);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            height: auto;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: var(--admin-secondary);
+            box-shadow: 0 0 0 0.25rem rgba(255, 0, 128, 0.15);
+            color: var(--light-color);
+        }
+        
+        .form-floating > label {
+            padding: 0.75rem 1rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .form-floating > .form-control:focus ~ label,
+        .form-floating > .form-control:not(:placeholder-shown) ~ label {
+            color: var(--admin-secondary);
+            transform: scale(0.85) translateY(-0.75rem) translateX(0.15rem);
+        }
+        
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .btn-login {
+            padding: 0.85rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 500;
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            width: 100%;
+            background: linear-gradient(to right, var(--admin-primary), var(--admin-secondary));
+            color: white;
+            border: none;
+            box-shadow: 0 4px 15px rgba(121, 40, 202, 0.3);
+        }
+        
+        /* Error message styling */
+        .error-message {
+            color: #ff3e5e;
+            background-color: rgba(255, 62, 94, 0.1);
+            border-left: 3px solid #ff3e5e;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            text-align: left;
+            animation: fadeIn 0.3s ease-in;
+            display: none;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .back-to-home {
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        
+        .back-to-home:hover {
+            color: var(--admin-secondary);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container" data-aos="fade-up" data-aos-duration="800">
+        <div class="login-box">
+            <div class="login-logo">
+                <i class="fas fa-shield-alt"></i>CryptoPro
+            </div>
+            <div class="admin-badge">
+                <i class="fas fa-user-shield me-1"></i> Admin Portal
+            </div>
+            <h2>Secure Admin Access</h2>
+            <form id="loginForm">
+                <div class="form-floating mb-3">
+                    <input type="email" id="email" class="form-control" placeholder="Email" autocomplete="username" required>
+                    <label for="email"><i class="fas fa-envelope me-2"></i>Email</label>
+                </div>
+                <div class="form-floating mb-4">
+                    <input type="password" id="password" class="form-control" placeholder="Password" autocomplete="current-password" required>
+                    <label for="password"><i class="fas fa-lock me-2"></i>Password</label>
+                </div>
+                <div id="error-message" class="error-message"></div>
+                <button type="submit" class="btn btn-login" id="loginBtn">
+                    <i class="fas fa-sign-in-alt me-2"></i>Secure Login
+                </button>
+                <a href="index.html" class="back-to-home">
+                    <i class="fas fa-home"></i>Back to Home
+                </a>
+            </form>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="successModalLabel">Authentication Successful</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="success-icon mb-4">
+                        <i class="fas fa-shield-check fa-4x" style="color: var(--admin-secondary);"></i>
+                    </div>
+                    <p class="mb-3 fs-5">Welcome back, Admin! You have successfully authenticated.</p>
+                    <div class="d-flex justify-content-center align-items-center">
+                        <div class="spinner-border" style="color: var(--admin-primary);" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mb-0 ms-2">Redirecting to admin dashboard...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $('#loginForm').on('submit', function (e) {
+            e.preventDefault();
+
+            const email = $('#email').val().trim();
+            const password = $('#password').val().trim();
+            const $errorMsg = $('#error-message');
+            const $loginButton = $('#loginBtn');
+
+            // Clear previous error message
+            $errorMsg.text('').hide();
+
+            if (!email || !password) {
+                $errorMsg.text('Email and password are required').show();
+                return;
+            }
+
+            $loginButton.prop('disabled', true).text('Logging in...');
+
+            // Use the CORS helper to handle login
+            CorsHelper.loginUser(email, password, true) // true for admin login
+                .then(data => {
+                    if (data.success) {
+                        $('#successModal').modal('show'); // Show success modal
+                        // Store token if it exists
+                        if (data.token) {
+                            localStorage.setItem('adminToken', data.token);
+                        }
+                        // Redirect to admin.html after a short delay
+                        setTimeout(() => {
+                            window.location.href = 'admin.html';
+                        }, 2000);
+                    } else {
+                        // Display specific error messages
+                        if (data.message && data.message.includes('Email not found')) {
+                            $errorMsg.text('Email not found. Please check your email address.').show();
+                        } else if (data.message && data.message.includes('Incorrect password')) {
+                            $errorMsg.text('Incorrect password. Please try again.').show();
+                        } else {
+                            $errorMsg.text(data.message || 'Login failed. Please try again.').show();
+                        }
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    $errorMsg.text('Login failed: ' + (err.message || 'Server error. Please try again later.')).show();
+                })
+                .finally(() => {
+                    $loginButton.prop('disabled', false).text('Secure Login');
+                });
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- AOS Animation Library -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <script>
+        // Initialize AOS
+        AOS.init();
+        
+        // Add background-clip standard property for compatibility
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create a style element instead of trying to modify existing stylesheets
+            const style = document.createElement('style');
+            style.textContent = `
+                .login-logo {
+                    background-clip: text;
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // Add Font Awesome shield-check icon if it doesn't exist
+            if (!document.querySelector('.fa-shield-check')) {
+                const style = document.createElement('style');
+                style.innerHTML = `
+                    .fa-shield-check:before {
+                        content: "\f2f7";
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        });
+    </script>
+</body>
+
+</html>

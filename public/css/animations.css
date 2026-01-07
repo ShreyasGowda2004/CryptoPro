@@ -1,0 +1,551 @@
+/**
+ * CryptoPro - Advanced Animations and Motion Effects
+ * This file contains all animation-related styles for the crypto trading platform
+ */
+
+/* ===== KEYFRAME ANIMATIONS ===== */
+
+/* Fade In */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Slide Down */
+@keyframes slideDown {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Slide Up */
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Slide In Right */
+@keyframes slideInRight {
+    from {
+        transform: translateX(50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Slide In Left */
+@keyframes slideInLeft {
+    from {
+        transform: translateX(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Pulse */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Float */
+@keyframes float {
+    0% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+/* Glow */
+@keyframes glow {
+    0% {
+        box-shadow: 0 0 5px rgba(0, 210, 255, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(0, 210, 255, 0.8);
+    }
+    100% {
+        box-shadow: 0 0 5px rgba(0, 210, 255, 0.5);
+    }
+}
+
+/* Ticker Scroll */
+@keyframes ticker-scroll {
+    0% {
+        transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+/* Price Up Animation */
+@keyframes priceUp {
+    0% {
+        color: inherit;
+        transform: scale(1);
+    }
+    50% {
+        color: #10b981;
+        transform: scale(1.1);
+    }
+    100% {
+        color: inherit;
+        transform: scale(1);
+    }
+}
+
+/* Price Down Animation */
+@keyframes priceDown {
+    0% {
+        color: inherit;
+        transform: scale(1);
+    }
+    50% {
+        color: #ef4444;
+        transform: scale(1.1);
+    }
+    100% {
+        color: inherit;
+        transform: scale(1);
+    }
+}
+
+/* Spinner Animation */
+@keyframes spinner {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Shimmer Animation */
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+/* Page Enter Animation */
+@keyframes pageEnter {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Page Exit Animation */
+@keyframes pageExit {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
+
+/* Modal Enter Animation */
+@keyframes modalEnter {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Modal Exit Animation */
+@keyframes modalExit {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+}
+
+/* ===== ANIMATION CLASSES ===== */
+
+/* Fade In Animation */
+.animate-fade-in {
+    animation: fadeIn 0.8s ease-out forwards;
+    opacity: 0;
+}
+
+/* Slide Up Animation */
+.animate-slide-up {
+    animation: slideUp 0.8s ease-out forwards;
+    opacity: 0;
+}
+
+/* Slide Down Animation */
+.animate-slide-down {
+    animation: slideDown 0.8s ease-out forwards;
+    opacity: 0;
+}
+
+/* Slide In Right Animation */
+.animate-slide-right {
+    animation: slideInRight 0.8s ease-out forwards;
+    opacity: 0;
+}
+
+/* Slide In Left Animation */
+.animate-slide-left {
+    animation: slideInLeft 0.8s ease-out forwards;
+    opacity: 0;
+}
+
+/* Pulse Animation */
+.animate-pulse {
+    animation: pulse 2s infinite;
+}
+
+/* Float Animation */
+.animate-float {
+    animation: float 3s ease-in-out infinite;
+}
+
+/* Glow Animation */
+.animate-glow {
+    animation: glow 2s infinite;
+}
+
+/* Price Up Animation */
+.price-up {
+    animation: priceUp 2s ease-out;
+}
+
+/* Price Down Animation */
+.price-down {
+    animation: priceDown 2s ease-out;
+}
+
+/* Hover Effect */
+.hover-effect {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+/* Button Hover Effect */
+.btn-hover {
+    transform: translateY(-3px);
+    box-shadow: 0 7px 20px rgba(0, 210, 255, 0.4);
+}
+
+/* Animation Delay Classes */
+.delay-100 {
+    animation-delay: 0.1s;
+}
+
+.delay-200 {
+    animation-delay: 0.2s;
+}
+
+.delay-300 {
+    animation-delay: 0.3s;
+}
+
+.delay-400 {
+    animation-delay: 0.4s;
+}
+
+.delay-500 {
+    animation-delay: 0.5s;
+}
+
+/* ===== COMPONENT ANIMATIONS ===== */
+
+/* Navbar Animation */
+.navbar {
+    animation: slideDown 0.8s ease-out;
+}
+
+/* Hero Section Animation */
+.hero {
+    position: relative;
+    overflow: hidden;
+}
+
+.hero::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, rgba(58, 123, 213, 0.1) 0%, rgba(0, 210, 255, 0.1) 100%);
+    animation: pulse 4s infinite;
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Crypto Card Animation */
+.crypto-card {
+    transition: all 0.3s ease;
+}
+
+.crypto-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+}
+
+.crypto-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, rgba(58, 123, 213, 0.1) 0%, rgba(0, 210, 255, 0.1) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: inherit;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.crypto-card:hover::before {
+    opacity: 1;
+}
+
+/* Button Animation */
+.btn {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease, height 0.6s ease;
+}
+
+.btn:active::after {
+    width: 300px;
+    height: 300px;
+}
+
+/* Price Ticker Animation */
+.price-ticker {
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    background: rgba(15, 23, 42, 0.8);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 10px 0;
+}
+
+.ticker-content {
+    display: inline-block;
+    animation: ticker-scroll 30s linear infinite;
+    padding-right: 100%;
+}
+
+/* Loading Spinner */
+.loading-spinner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.8);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.loading-spinner.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.spinner-ring {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    border-top-color: var(--secondary-color);
+    animation: spinner 1s linear infinite;
+}
+
+.spinner-text {
+    margin-top: 15px;
+    color: var(--light-color);
+    font-size: 1rem;
+}
+
+/* Shimmer Loading Effect */
+.shimmer {
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.05) 0%,
+        rgba(255, 255, 255, 0.1) 50%,
+        rgba(255, 255, 255, 0.05) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+/* Page Transition */
+.page-transition {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.page-enter {
+    animation: pageEnter 0.5s forwards;
+}
+
+.page-exit {
+    animation: pageExit 0.3s forwards;
+}
+
+/* Modal Animation */
+.animate-modal {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.modal-entering {
+    animation: modalEnter 0.3s forwards;
+}
+
+.modal-leaving {
+    animation: modalExit 0.3s forwards;
+}
+
+/* Chart Animation */
+.chart-container {
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.chart-container:hover {
+    transform: scale(1.02);
+}
+
+/* Trading Interface Animations */
+.trade-panel {
+    transition: all 0.3s ease;
+}
+
+.trade-panel:hover {
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Notification Animation */
+.notification {
+    animation: slideInRight 0.5s forwards, fadeIn 0.5s forwards;
+}
+
+.notification.closing {
+    animation: slideInRight 0.5s reverse forwards;
+}
+
+/* Wallet Animation */
+.wallet-modal {
+    animation: fadeIn 0.3s forwards;
+}
+
+.wallet-content {
+    animation: slideUp 0.5s forwards;
+}
+
+/* Transaction History Animation */
+.transaction-item {
+    transition: all 0.3s ease;
+}
+
+.transaction-item:hover {
+    background-color: rgba(30, 41, 59, 0.9);
+    transform: translateX(5px);
+}
+
+/* Market Trends Animation */
+.trend-arrow-up {
+    color: var(--success-color);
+    animation: float 2s infinite;
+}
+
+.trend-arrow-down {
+    color: var(--danger-color);
+    animation: float 2s infinite;
+}
+
+/* Responsive Animations */
+@media (max-width: 768px) {
+    .animate-slide-up,
+    .animate-slide-down,
+    .animate-slide-right,
+    .animate-slide-left {
+        animation-duration: 0.5s;
+    }
+    
+    .loading-spinner .spinner-ring {
+        width: 40px;
+        height: 40px;
+    }
+}

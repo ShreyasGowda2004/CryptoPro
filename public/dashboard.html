@@ -1,0 +1,1589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CryptoPro Dashboard</title>
+    <!-- Modern fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- Migration CSS -->
+    <link href="css/migration.css" rel="stylesheet">
+    <!-- CORS Helper Script -->
+    <script src="js/cors-helper.js"></script>
+    <style>
+        :root {
+            --primary-color: #3a7bd5;
+            --secondary-color: #00d2ff;
+            --accent-color: #00f2fe;
+            --dark-color: #0f172a;
+            --light-color: #f8fafc;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --card-bg: rgba(30, 41, 59, 0.8);
+            --card-border: rgba(255, 255, 255, 0.1);
+        }
+        
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: #0f172a;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(58, 123, 213, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(0, 210, 255, 0.05) 0%, transparent 50%);
+            color: var(--light-color);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.2rem 2rem;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            animation: slideDown 0.8s ease-out;
+        }
+        
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .header-logo i {
+            font-size: 1.8rem;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .user-welcome {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .user-welcome i {
+            color: var(--secondary-color);
+        }
+        
+        header p {
+            margin: 0;
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+        
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            border: none;
+            box-shadow: 0 4px 10px rgba(0, 210, 255, 0.3);
+        }
+        
+        .btn-primary:hover {
+            box-shadow: 0 6px 15px rgba(0, 210, 255, 0.4);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(to right, #e11d48, #f43f5e);
+            border: none;
+            box-shadow: 0 4px 10px rgba(225, 29, 72, 0.3);
+        }
+        
+        .btn-danger:hover {
+            box-shadow: 0 6px 15px rgba(225, 29, 72, 0.4);
+        }
+        
+        .crypto-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            padding: 2rem;
+            animation: fadeIn 1.5s;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .crypto-card {
+            position: relative;
+            height: 280px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 1.5rem;
+            overflow: hidden;
+            transition: all 0.5s ease;
+            border: 1px solid var(--card-border);
+        }
+        
+        .crypto-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, 
+                rgba(15, 23, 42, 0.2) 0%, 
+                rgba(15, 23, 42, 0.7) 50%,
+                rgba(15, 23, 42, 0.9) 100%);
+            z-index: 1;
+        }
+        
+        .crypto-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .crypto-card-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .crypto-logo {
+            position: absolute;
+            top: 1.5rem;
+            left: 1.5rem;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            z-index: 2;
+        }
+        
+        .crypto-logo i {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+        }
+        
+        .crypto-card h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+        
+        .crypto-price {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .crypto-price-value {
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+        
+        .crypto-price-change {
+            font-size: 0.9rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            background-color: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+        
+        .crypto-price-change.negative {
+            background-color: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+        
+        .crypto-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+        
+        .crypto-card a {
+            padding: 0.7rem 1.2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            transition: all 0.3s ease;
+            flex: 1;
+            z-index: 2;
+        }
+        
+        .crypto-card .buy-button {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+            box-shadow: 0 4px 10px rgba(0, 210, 255, 0.3);
+        }
+
+        .crypto-card .sell-button {
+            background: linear-gradient(to right, #e11d48, #f43f5e);
+            color: white;
+            box-shadow: 0 4px 10px rgba(225, 29, 72, 0.3);
+        }
+        
+        .crypto-card .buy-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 210, 255, 0.4);
+        }
+        
+        .crypto-card .sell-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(225, 29, 72, 0.4);
+        }
+        
+        .wallet-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(15, 23, 42, 0.85); /* Darker background for emphasis */
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            overflow-y: auto;
+            padding: 2rem 0;
+        }
+        
+        .wallet-content {
+            background-color: var(--dark-color);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 700px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        
+        .wallet-header {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            padding: 1.5rem;
+            color: white;
+        }
+        
+        .wallet-header h3 {
+            margin: 0;
+            font-weight: 600;
+            background: linear-gradient(to right, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 1));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+        
+        .wallet-balance-summary {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+        
+        .holdings-header {
+            background: rgba(30, 41, 59, 0.3);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        
+        .holdings-filter select {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--light-color);
+            font-size: 0.85rem;
+            padding: 0.25rem 0.75rem;
+        }
+        
+        .holdings-filter select:focus {
+            box-shadow: 0 0 0 0.25rem rgba(0, 210, 255, 0.25);
+            border-color: rgba(0, 210, 255, 0.5);
+        }
+        
+        .bg-gradient-primary {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+        }
+        
+        .wallet-tabs .nav-pills .nav-link {
+            color: var(--light-color);
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            margin: 0 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .wallet-tabs .nav-pills .nav-link.active {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 210, 255, 0.3);
+        }
+        
+        .transaction-item {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .transaction-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+        }
+        
+        .transaction-icon.buy {
+            background-color: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+        
+        .transaction-icon.sell {
+            background-color: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+        
+        .wallet-header .close-icon {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .wallet-header .close-icon:hover {
+            color: var(--secondary-color);
+            transform: rotate(90deg);
+        }
+        
+        .table {
+            color: var(--light-color);
+            margin-bottom: 0;
+            background-color: transparent;
+        }
+        
+        .table th {
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.7);
+            border-color: rgba(255, 255, 255, 0.05);
+            padding: 0.75rem;
+            background-color: rgba(15, 23, 42, 0.6);
+        }
+        
+        .table td {
+            padding: 1rem 0.75rem;
+            border-color: rgba(255, 255, 255, 0.05);
+            vertical-align: middle;
+        }
+        
+        .table tbody tr {
+            transition: all 0.3s ease;
+            background-color: rgba(15, 23, 42, 0.8) !important;
+        }
+        
+        .table tbody tr:hover {
+            background-color: rgba(30, 41, 59, 0.9) !important;
+        }
+        
+        .coin-cell {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .coin-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .coin-icon i {
+            font-size: 1rem;
+            color: var(--secondary-color);
+        }
+        
+        #closeWalletButton {
+            background: transparent;
+            color: var(--light-color);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0.7rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        #closeWalletButton:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+
+        .footer {
+            position: relative;
+            bottom: 0;
+            width: 100%;
+            font-size: 0.9rem;
+            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 1.5s;
+        }
+
+        .modal-content {
+            background: rgba(30, 41, 59, 0.95);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            color: var(--light-color);
+        }
+        
+        .modal-header {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+        }
+        
+        .modal-footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 1.5rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideDown {
+            from { transform: translateY(-50px); }
+            to { transform: translateY(0); }
+        }
+        
+        @keyframes floatUp {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0); }
+        }
+        
+        @media (max-width: 768px) {
+            header {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .header-actions {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .crypto-container {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+        }
+        
+        .transaction-history {
+            max-height: 350px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+        }
+        
+        .tab-pane.holdings-pane {
+            max-height: 350px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+        }
+        
+        /* Custom scrollbar styling */
+        .transaction-history::-webkit-scrollbar,
+        .tab-pane.holdings-pane::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .transaction-history::-webkit-scrollbar-track,
+        .tab-pane.holdings-pane::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        
+        .transaction-history::-webkit-scrollbar-thumb,
+        .tab-pane.holdings-pane::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+        
+        .transaction-history::-webkit-scrollbar-thumb:hover,
+        .tab-pane.holdings-pane::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Ensure dark styling for wallet tables */
+        .dark-table-body tr {
+            background-color: rgba(15, 23, 42, 0.4) !important;
+        }
+        
+        .dark-table-body tr:hover {
+            background-color: rgba(30, 41, 59, 0.7) !important;
+        }
+        
+        /* Ensure table has transparent background */
+        .tab-pane.holdings-pane .table {
+            background-color: transparent !important;
+        }
+        
+        .table tbody tr {
+            transition: all 0.3s ease;
+            background-color: rgba(15, 23, 42, 0.8) !important;
+        }
+        
+        .table tbody tr:hover {
+            background-color: rgba(30, 41, 59, 0.9) !important;
+        }
+        
+        /* Override any default white background */
+        .table, 
+        .table tbody, 
+        .table tbody tr td, 
+        .holdings-pane,
+        .tab-pane {
+            background-color: rgba(15, 23, 42, 0.8) !important;
+        }
+        
+        /* Improve text visibility in holdings table */
+        .table tbody tr td {
+            color: rgba(255, 255, 255, 0.9) !important;
+            font-weight: 500 !important;
+        }
+        
+        .coin-cell {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        /* Make coin symbols more visible */
+        .coin-cell small.text-muted {
+            color: rgba(255, 255, 255, 0.7) !important;
+            font-weight: 500 !important;
+            font-size: 0.9rem !important;
+        }
+    </style>
+</head>
+<body>
+    <header data-aos="fade-down" data-aos-duration="800">
+        <div class="header-logo">
+            <i class="fas fa-coins"></i>
+            <h1 class="mb-0">CryptoPro</h1>
+        </div>
+        <div class="user-welcome">
+            <i class="fas fa-user-circle"></i>
+            <p class="mb-0">Welcome, <span id="userName">User</span></p>
+        </div>
+        <div class="header-actions">
+            <button id="walletButton" class="btn btn-primary">
+                <i class="fas fa-wallet"></i>
+                <span>My Wallet</span>
+            </button>
+            <button id="logoutButton" class="btn btn-danger">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </button>
+        </div>
+    </header>
+
+    <div class="crypto-container">
+        <!-- Cryptocurrency cards -->
+        <div class="crypto-card" style="background-image: url('images/bitcoin.png');" data-aos="fade-up" data-aos-delay="100">
+            <div class="crypto-logo">
+                <i class="fab fa-bitcoin"></i>
+            </div>
+            <div class="crypto-card-content">
+                <h3>Bitcoin (BTC)</h3>
+                <div class="crypto-price">
+                    <span class="crypto-price-value">$43,256.78</span>
+                    <span class="crypto-price-change">+3.2%</span>
+                </div>
+                <div class="crypto-actions">
+                    <a href="buy.html?coin=Bitcoin&price=43256.78" class="buy-button">
+                        <i class="fas fa-shopping-cart me-1"></i> Buy
+                    </a>
+                    <a href="sell.html?coin=Bitcoin" class="sell-button">
+                        <i class="fas fa-exchange-alt me-1"></i> Sell
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="crypto-card" style="background-image: url('images/ethereum.png');" data-aos="fade-up" data-aos-delay="200">
+            <div class="crypto-logo">
+                <i class="fab fa-ethereum"></i>
+            </div>
+            <div class="crypto-card-content">
+                <h3>Ethereum (ETH)</h3>
+                <div class="crypto-price">
+                    <span class="crypto-price-value">$3,128.45</span>
+                    <span class="crypto-price-change">+2.1%</span>
+                </div>
+                <div class="crypto-actions">
+                    <a href="buy.html?coin=Ethereum&price=3128.45" class="buy-button">
+                        <i class="fas fa-shopping-cart me-1"></i> Buy
+                    </a>
+                    <a href="sell.html?coin=Ethereum" class="sell-button">
+                        <i class="fas fa-exchange-alt me-1"></i> Sell
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="crypto-card" style="background-image: url('images/cardano.png');" data-aos="fade-up" data-aos-delay="300">
+            <div class="crypto-logo">
+                <i class="fas fa-coins"></i>
+            </div>
+            <div class="crypto-card-content">
+                <h3>Cardano (ADA)</h3>
+                <div class="crypto-price">
+                    <span class="crypto-price-value">$0.45</span>
+                    <span class="crypto-price-change negative">-1.2%</span>
+                </div>
+                <div class="crypto-actions">
+                    <a href="buy.html?coin=Cardano&price=0.45" class="buy-button">
+                        <i class="fas fa-shopping-cart me-1"></i> Buy
+                    </a>
+                    <a href="sell.html?coin=Cardano" class="sell-button">
+                        <i class="fas fa-exchange-alt me-1"></i> Sell
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="crypto-card" style="background-image: url('images/litecoin.png');" data-aos="fade-up" data-aos-delay="400">
+            <div class="crypto-logo">
+                <i class="fab fa-litecoin-sign"></i>
+            </div>
+            <div class="crypto-card-content">
+                <h3>Litecoin (LTC)</h3>
+                <div class="crypto-price">
+                    <span class="crypto-price-value">$87.32</span>
+                    <span class="crypto-price-change">+0.8%</span>
+                </div>
+                <div class="crypto-actions">
+                    <a href="buy.html?coin=Litecoin&price=87.32" class="buy-button">
+                        <i class="fas fa-shopping-cart me-1"></i> Buy
+                    </a>
+                    <a href="sell.html?coin=Litecoin" class="sell-button">
+                        <i class="fas fa-exchange-alt me-1"></i> Sell
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="crypto-card" style="background-image: url('images/polkadot.png');" data-aos="fade-up" data-aos-delay="500">
+            <div class="crypto-logo">
+                <i class="fas fa-dot-circle"></i>
+            </div>
+            <div class="crypto-card-content">
+                <h3>Polkadot (DOT)</h3>
+                <div class="crypto-price">
+                    <span class="crypto-price-value">$6.78</span>
+                    <span class="crypto-price-change">+2.4%</span>
+                </div>
+                <div class="crypto-actions">
+                    <a href="buy.html?coin=Polkadot&price=6.78" class="buy-button">
+                        <i class="fas fa-shopping-cart me-1"></i> Buy
+                    </a>
+                    <a href="sell.html?coin=Polkadot" class="sell-button">
+                        <i class="fas fa-exchange-alt me-1"></i> Sell
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="crypto-card" style="background-image: url('images/dogecoin.png');" data-aos="fade-up" data-aos-delay="600">
+            <div class="crypto-logo">
+                <i class="fas fa-dog"></i>
+            </div>
+            <div class="crypto-card-content">
+                <h3>Dogecoin (DOGE)</h3>
+                <div class="crypto-price">
+                    <span class="crypto-price-value">$0.12</span>
+                    <span class="crypto-price-change">+5.6%</span>
+                </div>
+                <div class="crypto-actions">
+                    <a href="buy.html?coin=Dogecoin&price=0.12" class="buy-button">
+                        <i class="fas fa-shopping-cart me-1"></i> Buy
+                    </a>
+                    <a href="sell.html?coin=Dogecoin" class="sell-button">
+                        <i class="fas fa-exchange-alt me-1"></i> Sell
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="crypto-card" style="background-image: url('images/ripple.png');" data-aos="fade-up" data-aos-delay="700">
+            <div class="crypto-logo">
+                <i class="fas fa-wave-square"></i>
+            </div>
+            <div class="crypto-card-content">
+                <h3>Ripple (XRP)</h3>
+                <div class="crypto-price">
+                    <span class="crypto-price-value">$0.62</span>
+                    <span class="crypto-price-change">+1.5%</span>
+                </div>
+                <div class="crypto-actions">
+                    <a href="buy.html?coin=Ripple&price=0.62" class="buy-button">
+                        <i class="fas fa-shopping-cart me-1"></i> Buy
+                    </a>
+                    <a href="sell.html?coin=Ripple" class="sell-button">
+                        <i class="fas fa-exchange-alt me-1"></i> Sell
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="crypto-card" style="background-image: url('images/solana.png');" data-aos="fade-up" data-aos-delay="800">
+            <div class="crypto-logo">
+                <i class="fas fa-sun"></i>
+            </div>
+            <div class="crypto-card-content">
+                <h3>Solana (SOL)</h3>
+                <div class="crypto-price">
+                    <span class="crypto-price-value">$104.28</span>
+                    <span class="crypto-price-change">+3.8%</span>
+                </div>
+                <div class="crypto-actions">
+                    <a href="buy.html?coin=Solana&price=104.28" class="buy-button">
+                        <i class="fas fa-shopping-cart me-1"></i> Buy
+                    </a>
+                    <a href="sell.html?coin=Solana" class="sell-button">
+                        <i class="fas fa-exchange-alt me-1"></i> Sell
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Professional Wallet Modal -->
+    <div id="walletModal" class="wallet-modal">
+        <div class="wallet-content" data-aos="zoom-in" data-aos-duration="500">
+            <div class="wallet-header d-flex justify-content-between align-items-center">
+                <h3><i class="fas fa-wallet me-2"></i>Professional Wallet</h3>
+                <div class="close-icon" id="closeWallet">
+                    <i class="fas fa-times"></i>
+                </div>
+            </div>
+            <div class="wallet-balance-summary mb-4">
+                <!-- Content will be dynamically generated -->
+            </div>
+            <div class="wallet-tabs mb-3">
+                <ul class="nav nav-pills nav-fill mb-3" id="walletTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="holdings-tab" data-bs-toggle="pill" data-bs-target="#holdings" type="button" role="tab" aria-controls="holdings" aria-selected="true">
+                            <i class="fas fa-coins me-2"></i>Holdings
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="transactions-tab" data-bs-toggle="pill" data-bs-target="#transactions" type="button" role="tab" aria-controls="transactions" aria-selected="false">
+                            <i class="fas fa-exchange-alt me-2"></i>Transactions
+                        </button>
+                    </li>
+                </ul>
+            </div>
+            <div class="tab-content" id="walletTabContent">
+                <div class="tab-pane fade show active holdings-pane" id="holdings" role="tabpanel" aria-labelledby="holdings-tab">
+                    <div class="holdings-header d-flex justify-content-between align-items-center mb-3 px-2">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-chart-pie me-2 text-primary"></i>
+                            <h6 class="mb-0">Your Assets</h6>
+                        </div>
+                        <div class="holdings-filter">
+                            <select class="form-select form-select-sm" id="holdingsSortSelect">
+                                <option value="value-desc">Highest Value</option>
+                                <option value="value-asc">Lowest Value</option>
+                                <option value="change-desc">Best Performance</option>
+                                <option value="change-asc">Worst Performance</option>
+                            </select>
+                        </div>
+                    </div>
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Asset</th>
+                                <th>Quantity</th>
+                                <th>Value</th>
+                                <th>24h</th>
+                                <th>Total Change</th>
+                            </tr>
+                        </thead>
+                        <tbody id="walletTableBody" class="dark-table-body">
+                            <!-- Wallet data will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tab-pane fade" id="transactions" role="tabpanel" aria-labelledby="transactions-tab">
+                    <div class="transaction-history" id="transactionHistory">
+                        <!-- Transaction history will be loaded dynamically -->
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-end mt-4">
+                <button class="btn btn-primary px-4 py-2" id="closeWalletButton">
+                    <i class="fas fa-check-circle me-2"></i>Done
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout Confirmation Modal -->
+    <div class="modal fade" id="confirmLogoutModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-sign-out-alt me-2"></i>Confirm Logout</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="mb-4">
+                        <i class="fas fa-question-circle fa-3x text-warning"></i>
+                    </div>
+                    <p class="mb-0">Are you sure you want to logout from your account?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Cancel
+                    </button>
+                    <button type="button" class="btn btn-danger" id="confirmLogoutButton">
+                        <i class="fas fa-sign-out-alt me-2"></i>Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout Success Modal -->
+    <div class="modal fade" id="logoutModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-check-circle me-2"></i>Logout Successful</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="success-icon mb-4">
+                        <i class="fas fa-check-circle fa-4x text-success"></i>
+                    </div>
+                    <p>You have been successfully logged out.</p>
+                    <div class="d-flex justify-content-center align-items-center mt-3">
+                        <div class="spinner-border text-info me-2" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mb-0">Redirecting to login page...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer mt-auto py-3 bg-dark text-white">
+        <div class="container text-center">
+            <span>&copy; 2025 CryptoPro. All rights reserved.</span>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="js/database.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+    const API_URL = "https://cryptopro.onrender.com"; // Live backend API
+
+    // Define cryptocurrency data for ease of updating
+    const cryptoData = [
+        {
+            name: "Bitcoin",
+            symbol: "BTC",
+            icon: "fab fa-bitcoin",
+            background: "images/bitcoin.png"
+        },
+        {
+            name: "Ethereum",
+            symbol: "ETH",
+            icon: "fab fa-ethereum",
+            background: "images/ethereum.png"
+        },
+        {
+            name: "Cardano",
+            symbol: "ADA",
+            icon: "fas fa-coins",
+            background: "images/cardano.png"
+        },
+        {
+            name: "Litecoin",
+            symbol: "LTC",
+            icon: "fab fa-litecoin-sign",
+            background: "images/litecoin.png"
+        },
+        {
+            name: "Polkadot",
+            symbol: "DOT",
+            icon: "fas fa-dot-circle",
+            background: "images/polkadot.png"
+        },
+        {
+            name: "Dogecoin",
+            symbol: "DOGE",
+            icon: "fas fa-dog",
+            background: "images/dogecoin.png"
+        },
+        {
+            name: "Ripple",
+            symbol: "XRP",
+            icon: "fas fa-wave-square",
+            background: "images/ripple.png"
+        },
+        {
+            name: "Solana",
+            symbol: "SOL",
+            icon: "fas fa-sun",
+            background: "images/solana.png"
+        }
+    ];
+
+    // Function to fetch live cryptocurrency prices
+    async function fetchLivePrices() {
+        try {
+            const container = document.querySelector('.crypto-container');
+            
+            // Clear loading or previous content
+            container.innerHTML = '';
+            
+            // Create and append crypto cards with loading state
+            for (const crypto of cryptoData) {
+                const card = createCryptoCard(crypto);
+                container.appendChild(card);
+                
+                // Fetch real-time price for each cryptocurrency
+                fetchCryptoPrice(crypto.symbol, card);
+            }
+        } catch (error) {
+            console.error("Error fetching prices:", error);
+        }
+    }
+    
+    // Function to fetch price for a specific cryptocurrency
+    async function fetchCryptoPrice(symbol, cardElement) {
+        try {
+            const data = await CorsHelper.fetchWithCORS(`/crypto-price?coin=${symbol}`, {
+                method: 'GET'
+            });
+            
+            // If we have a price, use it, otherwise use the mock price
+            const priceValue = data.price || mockCryptoPrice(symbol);
+            const previousPrice = data.previousPrice || priceValue * (1 - (Math.random() * 0.1 - 0.05)); // Fallback
+            const change = ((priceValue - previousPrice) / previousPrice) * 100;
+            
+            // Update card with price
+            updateCryptoCard(cardElement, priceValue, change);
+        } catch (error) {
+            console.error(`Error fetching price for ${symbol}:`, error);
+            
+            // Use mock price as fallback when API fails completely
+            const mockPrice = mockCryptoPrice(symbol);
+            const previousPrice = mockPrice * (1 - (Math.random() * 0.1 - 0.05));
+            const change = ((mockPrice - previousPrice) / previousPrice) * 100;
+            
+            // Update card with mock price
+            updateCryptoCard(cardElement, mockPrice, change);
+        }
+    }
+    
+    // Function to generate a realistic mock price when API fails
+    function mockCryptoPrice(symbol) {
+        const basePrice = {
+            'BTC': 50000,
+            'ETH': 3000,
+            'DOGE': 0.25,
+            'XRP': 1.2,
+            'ADA': 2.5,
+            'SOL': 150,
+            'DOT': 30,
+            'LTC': 180
+        }[symbol] || 100;
+        
+        // Add some randomness (±5%)
+        const variance = basePrice * 0.05;
+        return basePrice + (Math.random() * variance * 2 - variance);
+    }
+    
+    // Function to create a cryptocurrency card
+    function createCryptoCard(crypto) {
+        const card = document.createElement('div');
+        card.className = 'crypto-card';
+        card.setAttribute('data-aos', 'fade-up');
+        card.setAttribute('data-crypto', crypto.name);
+        card.style.backgroundImage = `url('${crypto.background}')`;
+        
+        card.innerHTML = `
+            <div class="crypto-logo">
+                <i class="${crypto.icon}"></i>
+            </div>
+            <div class="crypto-card-content">
+                <h3>${crypto.name} (${crypto.symbol})</h3>
+                <div class="crypto-price">
+                    <span class="crypto-price-value">
+                        <div class="spinner-border spinner-border-sm" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        Loading...
+                    </span>
+                    <span class="crypto-price-change">...</span>
+                </div>
+                <div class="crypto-actions">
+                    <a href="buy.html?coin=${crypto.name}" class="buy-button">
+                        <i class="fas fa-shopping-cart me-1"></i> Buy
+                    </a>
+                    <a href="sell.html?coin=${crypto.name}" class="sell-button">
+                        <i class="fas fa-exchange-alt me-1"></i> Sell
+                    </a>
+                </div>
+            </div>
+        `;
+        
+        return card;
+    }
+    
+    // Function to update a cryptocurrency card with price data
+    function updateCryptoCard(cardElement, price, change) {
+        const priceValueElement = cardElement.querySelector('.crypto-price-value');
+        const priceChangeElement = cardElement.querySelector('.crypto-price-change');
+        const buyButtonElement = cardElement.querySelector('.buy-button');
+        const cryptoName = cardElement.getAttribute('data-crypto');
+        
+        // Update price display
+        priceValueElement.textContent = `$${price.toFixed(2)}`;
+        
+        // Update change percentage
+        const changeText = change >= 0 ? `+${change.toFixed(2)}%` : `${change.toFixed(2)}%`;
+        priceChangeElement.textContent = changeText;
+        
+        // Set appropriate class based on positive/negative change
+        if (change >= 0) {
+            priceChangeElement.classList.remove('negative');
+        } else {
+            priceChangeElement.classList.add('negative');
+        }
+        
+        // Update buy link to include current price
+        buyButtonElement.href = `buy.html?coin=${cryptoName}&price=${price.toFixed(2)}`;
+    }
+
+    async function fetchUserDetails() {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            alert("Please log in to access the dashboard.");
+            window.location.href = "login.html";
+            return;
+        }
+
+        try {
+            const result = await CorsHelper.fetchWithCORS('/user', {
+                method: 'GET',
+                headers: { 
+                    'Authorization': `Bearer ${token}` 
+                }
+            });
+
+            if (result.success) {
+                document.getElementById("userName").textContent = result.user.name;
+            } else {
+                alert(result.message || "Failed to fetch user details.");
+                window.location.href = "login.html";
+            }
+        } catch (error) {
+            console.error("Error fetching user details:", error);
+            alert("An error occurred while fetching user details.");
+            window.location.href = "login.html";
+        }
+    }
+
+    async function fetchWallet() {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            alert("Please log in to view your wallet.");
+            window.location.href = "login.html";
+            return;
+        }
+
+        try {
+            // Show loading state
+            const walletTableBody = document.getElementById("walletTableBody");
+            walletTableBody.innerHTML = `
+                <tr>
+                    <td colspan="4" class="text-center">
+                        <div class="d-flex justify-content-center align-items-center py-3">
+                            <div class="spinner-border text-primary me-3" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <span>Loading wallet data...</span>
+                        </div>
+                    </td>
+                </tr>
+            `;
+            
+            // Get wallet data from MongoDB through our updated helper function
+            const walletData = await CorsHelper.getWalletData();
+            
+            // Extract the data
+            const holdings = walletData.wallet.holdings;
+            const totalBalance = walletData.wallet.totalBalance;
+            const userTransactions = walletData.transactions.transactions;
+            
+            // Update the wallet table
+            walletTableBody.innerHTML = "";
+
+            if (holdings.length === 0) {
+                walletTableBody.innerHTML = `<tr><td colspan="5" class="text-center">No assets found in your wallet. Try buying some coins!</td></tr>`;
+            } else {
+                // Sort holdings by value (highest first by default)
+                holdings.sort((a, b) => parseFloat(b.totalPrice) - parseFloat(a.totalPrice));
+                
+                holdings.forEach((item) => {
+                    const row = document.createElement("tr");
+                    row.setAttribute('data-value', parseFloat(item.totalPrice));
+                    row.setAttribute('data-change', parseFloat(item.changeValue));
+                    
+                    // Properly extract and parse the change values
+                    let totalChangeValue = parseFloat(item.changeValue) || 0;
+                    let dailyChangeValue = parseFloat(item.dailyChangeValue) || 0;
+                    
+                    // Determine color classes based on change values
+                    const totalChangeColorClass = totalChangeValue >= 0 ? 'text-success' : 'text-danger';
+                    const dailyChangeColorClass = dailyChangeValue >= 0 ? 'text-success' : 'text-danger';
+                    
+                    // Format the change values with + or - sign
+                    const totalChangeDisplay = item.change || (totalChangeValue >= 0 
+                        ? `+${totalChangeValue.toFixed(2)}%` 
+                        : `${totalChangeValue.toFixed(2)}%`);
+                        
+                    const dailyChangeDisplay = item.dailyChange || (dailyChangeValue >= 0 
+                        ? `+${dailyChangeValue.toFixed(2)}%` 
+                        : `${dailyChangeValue.toFixed(2)}%`);
+                    
+                    // Calculate profit/loss amount
+                    const profitLossAmount = item.profitLoss || 0;
+                    const profitLossDisplay = profitLossAmount >= 0 
+                        ? `+$${profitLossAmount.toFixed(2)}` 
+                        : `-$${Math.abs(profitLossAmount).toFixed(2)}`;
+                    
+                    row.innerHTML = `
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="coin-icon me-2">
+                                    <i class="${item.icon}"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold">${item.coin}</div>
+                                    <small class="text-muted">${item.symbol}</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div>${item.quantity}</div>
+                            <small class="text-muted">$${parseFloat(item.currentPrice).toFixed(2)}</small>
+                        </td>
+                        <td>
+                            <div class="fw-bold">$${parseFloat(item.totalPrice).toFixed(2)}</div>
+                        </td>
+                        <td class="${dailyChangeColorClass}">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-${dailyChangeValue >= 0 ? 'caret-up' : 'caret-down'} me-1"></i>
+                                ${dailyChangeDisplay}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="${totalChangeColorClass} d-flex align-items-center">
+                                <i class="fas fa-${totalChangeValue >= 0 ? 'caret-up' : 'caret-down'} me-1"></i>
+                                ${totalChangeDisplay}
+                            </div>
+                            <small class="${totalChangeColorClass}">${profitLossDisplay}</small>
+                        </td>
+                    `;
+                    
+                    walletTableBody.appendChild(row);
+                });
+                
+                // Add event listener for sorting
+                document.getElementById('holdingsSortSelect').addEventListener('change', function() {
+                    const sortValue = this.value;
+                    const rows = Array.from(walletTableBody.querySelectorAll('tr'));
+                    
+                    // Skip if there's only the empty message row
+                    if (rows.length <= 1 && rows[0].cells.length === 1) return;
+                    
+                    rows.sort((a, b) => {
+                        if (sortValue === 'value-desc') {
+                            return parseFloat(b.getAttribute('data-value')) - parseFloat(a.getAttribute('data-value'));
+                        } else if (sortValue === 'value-asc') {
+                            return parseFloat(a.getAttribute('data-value')) - parseFloat(b.getAttribute('data-value'));
+                        } else if (sortValue === 'change-desc') {
+                            return parseFloat(b.getAttribute('data-change')) - parseFloat(a.getAttribute('data-change'));
+                        } else if (sortValue === 'change-asc') {
+                            return parseFloat(a.getAttribute('data-change')) - parseFloat(b.getAttribute('data-change'));
+                        }
+                        return 0;
+                    });
+                    
+                    // Remove all rows
+                    while (walletTableBody.firstChild) {
+                        walletTableBody.removeChild(walletTableBody.firstChild);
+                    }
+                    
+                    // Add sorted rows
+                    rows.forEach(row => walletTableBody.appendChild(row));
+                });
+            }
+            
+            // Update transaction history
+            const transactionHistory = document.getElementById('transactionHistory');
+            transactionHistory.innerHTML = '';
+            
+            if (userTransactions.length === 0) {
+                transactionHistory.innerHTML = `<div class="text-center text-muted py-4">No transaction history found. Start trading to see your activity here!</div>`;
+            } else {
+                // Sort transactions by date (newest first)
+                userTransactions.sort((a, b) => {
+                    // First try to use timestamp if available
+                    if (a.timestamp && b.timestamp) {
+                        return b.timestamp - a.timestamp;
+                    }
+                    
+                    // Fall back to date objects
+                    const dateA = new Date(a.date || a.createdAt);
+                    const dateB = new Date(b.date || b.createdAt);
+                    
+                    // If dates are the same (same second), use the transaction ID or random ordering
+                    if (dateB.getTime() === dateA.getTime()) {
+                        // If we have IDs, use them for consistent ordering
+                        if (a.id && b.id) {
+                            return b.id.localeCompare(a.id);
+                        }
+                        // Otherwise, just put the newer transactions first
+                        return -1;
+                    }
+                    
+                    return dateB.getTime() - dateA.getTime();
+                });
+                
+                userTransactions.forEach(tx => {
+                    const transactionItem = document.createElement('div');
+                    transactionItem.className = 'transaction-item';
+                    
+                    const isBuy = tx.type === 'Buy';
+                    const date = new Date(tx.date || tx.createdAt).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                    
+                    let coinName = tx.coin || '';
+                    let coinSymbol = tx.symbol || '';
+                    
+                    if (tx.cryptocurrency && tx.cryptocurrency.includes('(')) {
+                        const parts = tx.cryptocurrency.split('(');
+                        coinName = parts[0].trim();
+                        coinSymbol = parts[1].replace(')', '').trim();
+                    }
+                    
+                    let amountText = '';
+                    if (tx.amount && typeof tx.amount === 'string') {
+                        amountText = tx.amount;
+                    } else if (tx.quantity) {
+                        amountText = `${tx.quantity} ${coinSymbol}`;
+                    }
+                    
+                    let priceText = '';
+                    if (tx.price && typeof tx.price === 'string') {
+                        priceText = tx.price;
+                    } else if (tx.totalPrice) {
+                        priceText = `$${parseFloat(tx.totalPrice).toFixed(2)}`;
+                    }
+                    
+                    transactionItem.innerHTML = `
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center">
+                                <div class="transaction-icon ${isBuy ? 'buy' : 'sell'}">
+                                    <i class="fas fa-arrow-${isBuy ? 'down' : 'up'}"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0">${isBuy ? 'Bought' : 'Sold'} ${coinName}</h6>
+                                    <small class="text-light fw-bold">${date}</small>
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <h6 class="mb-0">${amountText}</h6>
+                                <small class="${isBuy ? 'text-success' : 'text-danger'} fw-bold">${priceText}</small>
+                            </div>
+                        </div>
+                    `;
+                    
+                    transactionHistory.appendChild(transactionItem);
+                });
+            }
+            
+            // Show total wallet summary at the top with more details
+            const walletSummary = document.querySelector('.wallet-balance-summary');
+            
+            // Calculate overall portfolio performance
+            let totalInvested = 0;
+            let totalProfitLoss = 0;
+            let totalPercentChange = 0;
+            
+            holdings.forEach(item => {
+                if (item.profitLoss) {
+                    totalProfitLoss += parseFloat(item.profitLoss);
+                }
+                // Calculate approximate total invested based on current value minus profit/loss
+                const invested = parseFloat(item.totalPrice) - (item.profitLoss || 0);
+                totalInvested += invested;
+            });
+            
+            // Calculate overall percent change
+            if (totalInvested > 0) {
+                totalPercentChange = (totalProfitLoss / totalInvested) * 100;
+            }
+            
+            // Create wallet summary content with enhanced visualization
+            if (totalBalance > 0 || userTransactions.length > 0) {
+                walletSummary.innerHTML = `
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4 class="mb-3">Portfolio Summary</h4>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Total Balance:</span>
+                                <span class="fw-bold" id="walletTotalBalance">$${totalBalance.toFixed(2)}</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Total Assets:</span>
+                                <span>${holdings.length}</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Total Transactions:</span>
+                                <span>${userTransactions.length}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h4 class="mb-3">Performance</h4>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Total P/L:</span>
+                                <span class="fw-bold ${totalProfitLoss >= 0 ? 'text-success' : 'text-danger'}">
+                                    ${totalProfitLoss >= 0 ? '+' : ''}$${totalProfitLoss.toFixed(2)}
+                                </span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Overall Change:</span>
+                                <span class="${totalPercentChange >= 0 ? 'text-success' : 'text-danger'}">
+                                    <i class="fas fa-${totalPercentChange >= 0 ? 'caret-up' : 'caret-down'} me-1"></i>
+                                    ${totalPercentChange >= 0 ? '+' : ''}${totalPercentChange.toFixed(2)}%
+                                </span>
+                            </div>
+                            <div class="progress mt-2" style="height: 8px;">
+                                <div class="progress-bar ${totalPercentChange >= 0 ? 'bg-success' : 'bg-danger'}" 
+                                     role="progressbar" 
+                                     style="width: ${Math.min(Math.abs(totalPercentChange), 100)}%;" 
+                                     aria-valuenow="${Math.abs(totalPercentChange)}" 
+                                     aria-valuemin="0" 
+                                     aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                walletSummary.innerHTML = `
+                    <div class="text-center py-3">
+                        <i class="fas fa-wallet fa-3x mb-3" style="color: var(--secondary-color);"></i>
+                        <h4>Your wallet is empty</h4>
+                        <p class="text-muted mb-0">Start trading to see your assets here</p>
+                    </div>
+                `;
+            }
+        } catch (error) {
+            console.error("Error fetching wallet:", error);
+            document.getElementById("walletTableBody").innerHTML = `
+                <tr><td colspan="4" class="text-center text-danger">
+                    An error occurred while fetching wallet details. Please try again later.
+                </td></tr>
+            `;
+            
+            const walletSummary = document.querySelector('.wallet-balance-summary');
+            walletSummary.innerHTML = `
+                <div class="text-center py-3">
+                    <i class="fas fa-exclamation-triangle fa-3x mb-3 text-warning"></i>
+                    <h4>Error Loading Wallet</h4>
+                    <p class="text-muted mb-0">Please try again later</p>
+                </div>
+            `;
+        }
+    }
+
+function redirectToLogin() {
+            window.location.href = "login.html";
+        }
+
+        function logout() {
+            localStorage.removeItem("token"); 
+            const logoutModal = new bootstrap.Modal(document.getElementById("logoutModal"));
+            logoutModal.show();
+            setTimeout(redirectToLogin, 2000);
+        }
+
+        document.getElementById("logoutButton").addEventListener("click", function () {
+            const confirmModal = new bootstrap.Modal(document.getElementById("confirmLogoutModal"));
+            confirmModal.show();
+        });
+
+        document.getElementById("confirmLogoutButton").addEventListener("click", function () {
+            const confirmModal = bootstrap.Modal.getInstance(document.getElementById("confirmLogoutModal"));
+            confirmModal.hide();
+            logout();
+        });
+
+    document.getElementById("walletButton").addEventListener("click", () => {
+        document.getElementById("walletModal").style.display = "flex";
+        // Reset to the holdings tab whenever the wallet is opened
+        const holdingsTab = document.getElementById('holdings-tab');
+        const transactionsTab = document.getElementById('transactions-tab');
+        const holdingsPane = document.getElementById('holdings');
+        const transactionsPane = document.getElementById('transactions');
+        
+        // Activate holdings tab
+        holdingsTab.classList.add('active');
+        holdingsPane.classList.add('show', 'active');
+        
+        // Deactivate transactions tab
+        transactionsTab.classList.remove('active');
+        transactionsPane.classList.remove('show', 'active');
+        
+        fetchWallet();
+    });
+
+    document.getElementById("closeWallet").addEventListener("click", () => {
+        document.getElementById("walletModal").style.display = "none";
+    });
+
+    document.getElementById("closeWalletButton").addEventListener("click", () => {
+        document.getElementById("walletModal").style.display = "none";
+    });
+    
+    fetchUserDetails();
+    
+    // Initialize AOS
+    AOS.init({
+        duration: 800,
+        easing: 'ease-in-out',
+        once: true
+    });
+    
+    // Add background-clip standard property for compatibility
+    document.addEventListener('DOMContentLoaded', function() {
+        // Create a style element instead of trying to modify existing stylesheets
+        const style = document.createElement('style');
+        style.textContent = `
+            header h1,
+            .wallet-header h3,
+            .header-logo i {
+                background-clip: text;
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Add Font Awesome litecoin-sign icon if it doesn't exist
+        if (!document.querySelector('.fa-litecoin-sign')) {
+            const style = document.createElement('style');
+            style.innerHTML = `
+                .fa-litecoin-sign:before {
+                    content: "\f3fa";
+                }
+            `;
+            document.head.appendChild(style);
+        }
+    });
+
+    // Initial data fetching
+    fetchUserDetails();
+    fetchLivePrices();
+    
+    // Set refresh interval for cryptocurrency prices (every 30 seconds)
+    const priceRefreshInterval = setInterval(fetchLivePrices, 30000);
+    
+    // Clear the interval when the page is unloaded
+    window.addEventListener('beforeunload', () => {
+        clearInterval(priceRefreshInterval);
+    });
+});
+
+    </script>
+    <!-- Wallet Migration Utility -->
+    <script src="js/wallet-migration.js"></script>
+</body>
+</html>
