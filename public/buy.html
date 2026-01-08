@@ -16,6 +16,8 @@
   <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
   <!-- Migration CSS -->
   <link href="css/migration.css" rel="stylesheet">
+  <!-- Professional Trading CSS -->
+  <link href="css/professional.css" rel="stylesheet">
   <style>
     :root {
       --primary-color: #3a7bd5;
@@ -321,9 +323,9 @@
             </div>
             
             <div class="mb-3">
-              <label for="cryptoPrice" class="form-label">Current Price (USD)</label>
+              <label for="cryptoPrice" class="form-label">Current Price (INR)</label>
               <div class="input-group">
-                <span class="input-group-text" style="background-color: rgba(30, 41, 59, 0.5); border: 1px solid rgba(255, 255, 255, 0.1); color: var(--light-color);">$</span>
+                <span class="input-group-text" style="background-color: rgba(30, 41, 59, 0.5); border: 1px solid rgba(255, 255, 255, 0.1); color: var(--light-color);">₹</span>
                 <input type="text" id="cryptoPrice" class="form-control" readonly />
               </div>
             </div>
@@ -337,9 +339,9 @@
             </div>
             
             <div class="mb-3">
-              <label for="totalPrice" class="form-label">Total Cost (USD)</label>
+              <label for="totalPrice" class="form-label">Total Cost (INR)</label>
               <div class="input-group">
-                <span class="input-group-text" style="background-color: rgba(30, 41, 59, 0.5); border: 1px solid rgba(255, 255, 255, 0.1); color: var(--light-color);">$</span>
+                <span class="input-group-text" style="background-color: rgba(30, 41, 59, 0.5); border: 1px solid rgba(255, 255, 255, 0.1); color: var(--light-color);">₹</span>
                 <input type="text" id="totalPrice" class="form-control" readonly />
               </div>
             </div>
@@ -463,7 +465,7 @@
       // Update volume info if provided
       const volumeEl = document.getElementById('volumeInfo');
       if (volume !== null) {
-        volumeEl.textContent = `Vol: $${formatLargeNumber(volume)}`;
+        volumeEl.textContent = `Vol: ₹${formatLargeNumber(volume)}`;
       } else {
         volumeEl.textContent = '';
       }
@@ -597,7 +599,7 @@
           // Show success modal
           document.getElementById('modalCryptoName').textContent = `${cryptoName} (${coinSymbols[cryptoName]})`;
           document.getElementById('modalQuantity').textContent = `${quantity} ${coinSymbols[cryptoName]}`;
-          document.getElementById('modalTotalPrice').textContent = `$${totalPrice.toFixed(2)}`;
+          document.getElementById('modalTotalPrice').textContent = `₹${totalPrice.toFixed(2)}`;
           const successModal = new bootstrap.Modal(document.getElementById('successModal'));
           successModal.show();
           

@@ -16,6 +16,8 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Migration CSS -->
     <link href="css/migration.css" rel="stylesheet">
+    <!-- Professional Trading CSS -->
+    <link href="css/professional.css" rel="stylesheet">
     <style>
         :root {
             --primary-color: #3a7bd5;
@@ -313,7 +315,7 @@
                         </div>
                         <div class="info-row">
                             <span class="info-label">Average Purchase Price</span>
-                            <span class="info-value" id="portfolioAvgPrice">$0.00</span>
+                            <span class="info-value" id="portfolioAvgPrice">₹0.00</span>
                         </div>
                     </div>
                 </div>
@@ -350,9 +352,9 @@
             </div>
                         
             <div class="mb-3">
-                            <label for="cryptoPrice" class="form-label">Current Price (USD)</label>
+                            <label for="cryptoPrice" class="form-label">Current Price (INR)</label>
                             <div class="input-group">
-                                <span class="input-group-text" style="background-color: rgba(30, 41, 59, 0.5); border: 1px solid rgba(255, 255, 255, 0.1); color: var(--light-color);">$</span>
+                                <span class="input-group-text" style="background-color: rgba(30, 41, 59, 0.5); border: 1px solid rgba(255, 255, 255, 0.1); color: var(--light-color);">₹</span>
                                 <input type="text" id="cryptoPrice" class="form-control" readonly />
                             </div>
             </div>
@@ -366,9 +368,9 @@
                         </div>
                         
                         <div class="mb-4">
-                            <label for="totalPrice" class="form-label">Total Proceeds (USD)</label>
+                            <label for="totalPrice" class="form-label">Total Proceeds (INR)</label>
                             <div class="input-group">
-                                <span class="input-group-text" style="background-color: rgba(30, 41, 59, 0.5); border: 1px solid rgba(255, 255, 255, 0.1); color: var(--light-color);">$</span>
+                                <span class="input-group-text" style="background-color: rgba(30, 41, 59, 0.5); border: 1px solid rgba(255, 255, 255, 0.1); color: var(--light-color);">₹</span>
                                 <input type="text" id="totalPrice" class="form-control" readonly />
                             </div>
                         </div>
@@ -534,7 +536,7 @@ async function fetchLivePrice() {
                     currentPrice = data.price;
                     document.getElementById('cryptoName').value = `${cryptoName} (${cryptoSymbol})`;
                     document.getElementById('cryptoPrice').value = currentPrice.toFixed(2);
-                    document.getElementById('marketPrice').textContent = `$${currentPrice.toFixed(2)}`;
+                    document.getElementById('marketPrice').textContent = `₹${currentPrice.toFixed(2)}`;
                     
                     // Simulate some market data for display
                     const randomChange = (Math.random() * 10 - 5).toFixed(2);
@@ -544,7 +546,7 @@ async function fetchLivePrice() {
                     
                     // Simulate market cap
                     const marketCap = (currentPrice * (Math.random() * 10000000 + 1000000)).toFixed(0);
-                    document.getElementById('marketCap').textContent = `$${formatLargeNumber(marketCap)}`;
+                    document.getElementById('marketCap').textContent = `₹${formatLargeNumber(marketCap)}`;
                     
                     updatePortfolioInfo();
         } else {
